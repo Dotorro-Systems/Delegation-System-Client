@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Delegation_System_Client": {
+    "Delegation-System-Client": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Delegation_System_Client:build:production"
+              "buildTarget": "Delegation-System-Client:build:production"
             },
             "development": {
-              "buildTarget": "Delegation_System_Client:build:development"
+              "buildTarget": "Delegation-System-Client:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,5 +92,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
