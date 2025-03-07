@@ -1,0 +1,10 @@
+services:
+  client:
+    build:
+      context: .
+    ports:
+      - "4200:4200"
+    command: ["ng", "serve", "--host", "0.0.0.0"]
+    container_name: Delegation-System-Client
+    environment:
+      - API_URL=http://localhost:8080
