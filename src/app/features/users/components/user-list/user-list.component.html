@@ -1,0 +1,8 @@
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="error">{{ error }}</div>
+
+<ul *ngIf="users.length">
+  <li *ngFor="let user of users">
+    <strong>{{ user.firstName }}</strong> ({{ user.email }})
+  </li>
+</ul>

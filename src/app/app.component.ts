@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [
+    RouterOutlet,
+    RouterLinkActive,
+    RouterLink
+  ],
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'Delegation-System-Client';
+  title = 'Delegation System Client';
 }
