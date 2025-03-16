@@ -1,13 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="utf-8">
-  <title>DelegationSystemClient</title>
+  <title>Delegation System</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
+  <script>
+    function toggleDarkMode() {
+      if (document.documentElement.getAttribute('data-bs-theme') === 'dark')
+        document.documentElement.setAttribute('data-bs-theme','light');
+      else
+        document.documentElement.setAttribute('data-bs-theme','dark');
+    }
+  </script>
   <app-root></app-root>
 </body>
 </html>
