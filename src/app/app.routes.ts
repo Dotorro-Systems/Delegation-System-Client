@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {UsersModule} from './features/users/users.module';
+import {AuthenticationModule} from './features/authentication/authentication.module';
 
 export const routes: Routes = [
-  { path: 'users', loadChildren: () => import('./features/users/users.module').then(m => m.UsersModule) },
+  { path: 'users', loadChildren: () => UsersModule },
+  { path: 'authentication', loadChildren: () => AuthenticationModule },
   { path: '', redirectTo: '/users', pathMatch: 'full' },
-  { path: '**', redirectTo: '/users' }
 ];
 
 @NgModule({
