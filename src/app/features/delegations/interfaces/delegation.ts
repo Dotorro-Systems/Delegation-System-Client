@@ -3,6 +3,6 @@ export interface Delegation {
   title: string;
   origin: string;
   destination: string;
-  start_date: Date;
-  end_date: Date;
+  startDate: Date;
+  endDate: Date;
 }

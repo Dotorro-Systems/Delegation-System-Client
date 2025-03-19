@@ -12,24 +12,24 @@ export class MockDelegationService {
       title: 'Project Workshop in Berlin',
       origin: 'Warsaw, Poland',
       destination: 'Berlin, Germany',
-      start_date: new Date("2024-07-12"),
-      end_date: new Date("2024-07-19"),
+      startDate: new Date("2024-07-12"),
+      endDate: new Date("2024-07-19"),
     },
     {
       id: 2,
       title: "Tech Conference in San Francisco",
       origin: "London, UK",
       destination: "San Francisco, USA",
-      start_date: new Date("2024-05-15"),
-      end_date: new Date("2024-05-20")
+      startDate: new Date("2024-05-15"),
+      endDate: new Date("2024-05-20")
     },
     {
       id: 3,
       title: "Project Workshop in Tokyo",
       origin: "Paris, France",
       destination: "Tokyo, Japan",
-      start_date: new Date("2024-06-05"),
-      end_date: new Date("2024-06-10")
+      startDate: new Date("2024-06-05"),
+      endDate: new Date("2024-06-10")
     }
   ]
 
