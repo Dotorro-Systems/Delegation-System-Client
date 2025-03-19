@@ -17,7 +17,7 @@ export class UserService extends ApiService {
   }
 
   public addUser(user: User): Observable<User> {
-    return this.post<User>("users/create", user);
+    return this.post<User>("users/", user);
   }
 
   public putUser(userId: number, updatedUser: User): Observable<User> {
