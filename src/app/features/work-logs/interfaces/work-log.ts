@@ -4,8 +4,6 @@ import {WorkLogBreak} from './work-log-break';
 
 export interface WorkLog {
   id: number;
-  delegationId: number;
-  userId: number;
   startTime: Date;
   endTime: Date;
   delegation: Delegation;
