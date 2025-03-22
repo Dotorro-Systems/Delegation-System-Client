@@ -1,6 +1,6 @@
 import {Delegation} from '../delegations/interfaces/delegation';
 import {MOCK_USERS} from './mock-users';
-import {MOCK_EXPENSES} from './expenses';
+import {MOCK_EXPENSES} from './mock-expenses';
 
 export const MOCK_DELEGATIONS: Delegation[] = [
   {
@@ -43,3 +43,8 @@ export const MOCK_DELEGATIONS: Delegation[] = [
     workLogs: []
   }
 ]
+
+MOCK_EXPENSES[0].delegation = MOCK_DELEGATIONS[1];
+MOCK_EXPENSES[1].delegation = MOCK_DELEGATIONS[1];
+
+MOCK_DELEGATIONS[2].expenses = MOCK_EXPENSES.slice(0, 2);

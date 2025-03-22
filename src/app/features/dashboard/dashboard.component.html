@@ -1,0 +1,26 @@
+<div class="row p-5">
+  <div class="col-3">
+    <h3>{{ user.department.name }}</h3>
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="error">{{ error }}</div>
+
+    <ul class="nav flex-column" *ngIf="delegations.length">
+      <li class="nav-item" *ngFor="let delegation of delegations">
+        <a class="nav-link" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
+      </li>
+    </ul>
+
+    <div ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills flex-column" orientation="vertical" *ngIf="delegations.length">
+      <ng-container *ngFor="let delegation of delegations" ngbNavItem="{{ delegation.id }}">
+        <button ngbNavLink>{{ delegation.title }}</button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="row col-9">
+    <div class="col-md-8">
+      <h2>{{ selectedDelegation.title }}</h2>
+      <h4>{{ selectedDelegation.origin }} - {{ selectedDelegation.destination }}</h4>
+    </div>
+    <div class="col-md-4 text-end">{{ selectedDelegation.startDate.toDateString() }} - {{ selectedDelegation.endDate.toDateString() }}</div>
+  </div>
+</div>
