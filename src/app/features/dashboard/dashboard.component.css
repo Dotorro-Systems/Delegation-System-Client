@@ -1,0 +1,24 @@
+@media (min-width: 992px) {
+  .delegation-date {
+    text-align: end;
+  }
+}
+
+.card {
+  width: 16rem;
+}
+
+.dashboard {
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .dashboard {
+    text-align: center;
+  }
+
+  .phone-align {
+    display: flex;
+    justify-content: center;
+  }
+}

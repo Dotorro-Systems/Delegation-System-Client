@@ -6,6 +6,7 @@ import {DelegationsModule} from '../delegations/delegations.module';
 import {UsersModule} from '../users/users.module';
 import {User} from '../users/interfaces/user';
 import {UserService} from '../users/services/user.service';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +14,9 @@ import {UserService} from '../users/services/user.service';
     DelegationsModule,
     UsersModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    NgbNavModule,
+    NgbNavModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
@@ -26,7 +29,6 @@ export class DashboardComponent implements OnInit {
   selectedDelegation: Delegation;
   loading: boolean = true;
   error: string = '';
-  active: string = '';
 
   constructor(private delegationService: DelegationService, private userService: UserService) {}
 
