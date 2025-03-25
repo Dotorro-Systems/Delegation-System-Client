@@ -7,5 +7,5 @@ export interface Expense {
   user: User;
   description: string;
   amount: number;
-  createAt: Date;
+  createdAt: Date;
 }

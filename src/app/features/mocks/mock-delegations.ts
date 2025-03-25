@@ -1,6 +1,7 @@
 import {Delegation} from '../delegations/interfaces/delegation';
 import {MOCK_USERS} from './mock-users';
-import {MOCK_EXPENSES} from './expenses';
+import {MOCK_EXPENSES} from './mock-expenses';
+import {MOCK_NOTES} from './mock-notes';
 
 export const MOCK_DELEGATIONS: Delegation[] = [
   {
@@ -11,9 +12,9 @@ export const MOCK_DELEGATIONS: Delegation[] = [
     status: 'Planned',
     startDate: new Date("2024-07-12"),
     endDate: new Date("2024-07-19"),
-    notes: [],
+    notes: [ MOCK_NOTES[0], MOCK_NOTES[1], MOCK_NOTES[2], MOCK_NOTES[0], MOCK_NOTES[1], MOCK_NOTES[2] ],
     users: MOCK_USERS.slice(0, 2),
-    expenses: [],
+    expenses: MOCK_EXPENSES.slice(0, 2),
     workLogs: []
   },
   {
@@ -39,7 +40,14 @@ export const MOCK_DELEGATIONS: Delegation[] = [
     endDate: new Date("2024-06-10"),
     notes: [],
     users: [ MOCK_USERS[0] ],
-    expenses: MOCK_EXPENSES.slice(0, 2),
+    expenses: [],
     workLogs: []
   }
 ]
+
+MOCK_EXPENSES[0].delegation = MOCK_DELEGATIONS[0];
+MOCK_EXPENSES[1].delegation = MOCK_DELEGATIONS[0];
+
+MOCK_NOTES[0].delegation = MOCK_DELEGATIONS[0];
+MOCK_NOTES[1].delegation = MOCK_DELEGATIONS[0];
+MOCK_NOTES[2].delegation = MOCK_DELEGATIONS[0];
