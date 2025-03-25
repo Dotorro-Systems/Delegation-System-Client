@@ -6,6 +6,12 @@
 
 .card {
   width: 16rem;
+  background-color: rgba(0, 0, 0, .2);
+  transition: all .2s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
 }
 
 .dashboard {
