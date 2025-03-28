@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
-declare var bootstrap: any;
-
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-toast',
@@ -22,8 +21,11 @@ export class ToastComponent {
       if (toastBody)
         toastBody.innerText = content;
 
-      const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-      toastBootstrap.show()
+      if (toastLiveExample)
+      {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+        toastBootstrap.show()
+      }
     }
   }
 }

@@ -43,6 +43,12 @@
               </select>
             </div>
             <div class="col-12">
+              <label for="role" class="form-label">Department</label>
+              <select class="form-select" aria-label="Default select example" id="department" formControlName="departmentId">
+                <option [value]="department.id" *ngFor="let department of departments">{{ department.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
               <div class="form-check">
                 <label class="form-check-label" for="agreement">I agree all statements in <a href="#">terms of service</a></label>
                 <input type="checkbox" class="form-check-input" id="agreement" formControlName="agreement">
@@ -55,3 +61,5 @@
     </div>
   </div>
 </div>
+
+<app-toast/>

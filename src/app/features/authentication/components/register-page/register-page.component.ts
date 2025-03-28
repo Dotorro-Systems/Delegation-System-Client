@@ -1,30 +1,43 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ToastComponent} from '../../../../core/components/toast/toast.component';
 import {ApiService} from '../../../../core/services/api.service';
-import {AuthenticationModule} from '../../authentication.module';
+import {CommonModule} from '@angular/common';
+import {Department} from '../../../departments/interfaces/department';
+import {DepartmentService} from '../../../departments/services/department.service';
 
 @Component({
   selector: 'app-register-page',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
-    AuthenticationModule,
+    ToastComponent,
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css',
 })
-export class RegisterPageComponent {
+export class RegisterPageComponent implements OnInit {
   myForm: FormGroup;
+  departments!: Department[];
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService) {
+  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private departmentService: DepartmentService) {
     this.myForm = this.formBuilder.group({
       firstName: [''],
       lastName: [''],
       email: [''],
       password: [''],
       phone: [''],
-      role: [''],
+      role: 'Employee',
       agreement: false,
+      departmentId: 1,
+    });
+  }
+
+  ngOnInit() {
+    this.departmentService
+      .getDepartments()
+      .subscribe(departments => {
+        this.departments = departments;
     });
   }
 
@@ -36,8 +49,11 @@ export class RegisterPageComponent {
 
     this.apiService
       .post<{}>('users/create', this.myForm.value)
-      .subscribe(() => {
-        window.location.href = '/dashboard';
+      .subscribe({
+        next: (response) => {
+          window.location.href = 'dashboard';
+        },
+        error: (err) => {ToastComponent.showToast("Registration failed!", `${err.error}`);}
       });
   }
 }

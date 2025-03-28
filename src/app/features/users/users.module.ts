@@ -16,7 +16,7 @@ import {MockUserService} from './services/mock-user.service';
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
-    { provide: UserService, useClass: UserService },
+    { provide: UserService, useClass: MockUserService },
   ]
 })
 export class UsersModule { }
