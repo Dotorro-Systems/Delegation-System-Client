@@ -13,7 +13,7 @@ import {MockDelegationService} from './services/mock-delegation.service';
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
-    { provide: DelegationService, useClass: MockDelegationService },
+    { provide: DelegationService, useClass: DelegationService },
   ]
 })
 export class DelegationsModule { }

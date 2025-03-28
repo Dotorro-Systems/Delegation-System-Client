@@ -9,7 +9,7 @@ import {User} from '../interfaces/user';
 export class UserService extends ApiService {
 
   public getUsers(): Observable<User[]> {
-    return this.getAll<User>("users");
+    return this.getAll<User>("users/");
   }
 
   public getById(id: number): Observable<User> {
