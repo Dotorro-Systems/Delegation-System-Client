@@ -1,13 +1,13 @@
 <section class="p-3 text-center">
   <div class="container p-3 bg-light-subtle border border-opacity-25">
     <h1>
-      {{ delegations[delegationId].title }}
+      {{ delegation.title }}
     </h1>
     <div class="p-2 fs-5">
-      {{ delegations[delegationId].startDate.toDateString() }} - {{ delegations[delegationId].endDate.toDateString() }}
+      {{ delegation.startDate.toDateString() }} - {{ delegation.endDate.toDateString() }}
     </div>
     <div class="p-3 fs-4 text-warning ">
-      {{ delegations[delegationId].status }}
+      {{ delegation.status }}
     </div>
     <div class ='p'>
       <button type="button" class="btn btn-primary px-4 mx-3">Start</button>
@@ -19,12 +19,12 @@
 <section class="p-3 text-center">
   <div id="userCarousel" class="carousel slide" data-bs-ride="false">
     <div class="carousel-inner">
-      <div *ngIf="delegations[delegationId].users.length == 0">
+      <div *ngIf="delegation.users.length == 0">
         <p>No participants</p>
       </div>
-      <div class="carousel-item" *ngFor="let user of delegations[delegationId].users; let i = index" [class.active]="i === 0">
+      <div class="carousel-item" *ngFor="let user of delegation.users; let i = index" [class.active]="i === 0">
         <div class="row">
-          <div class="col-3" *ngFor="let user of delegations[delegationId].users.slice(i * 4, (i + 1) * 4)">
+          <div class="col-3" *ngFor="let user of delegation.users.slice(i * 4, (i + 1) * 4)">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>

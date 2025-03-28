@@ -24,11 +24,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DelegationsComponent implements OnInit {
   delegationId!: number;
-  delegations: Delegation[] = [];
-  // @ts-ignore
-  user: User;
-  // @ts-ignore
-  selectedDelegation: Delegation;
+  delegation!: Delegation;
+  user!: User;
   loading: boolean = true;
   error: string = '';
 
@@ -42,7 +39,6 @@ export class DelegationsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
           const id = params.get('id');
           this.delegationId = id ? +id : NaN;
-          this.delegationId = this.delegationId - 1;
         });
 
     this.userService.getUsers().subscribe({
@@ -51,14 +47,14 @@ export class DelegationsComponent implements OnInit {
       }
     })
 
-    this.delegationService.getDelegations().subscribe({
+    this.delegationService.getById(this.delegationId).subscribe({
       next: (data) => {
-        this.delegations = data.filter(d => d.users.includes(this.user));
+        this.delegation = data;
+        console.log('Delegation:', this.delegation);
         this.loading = false;
-        this.selectedDelegation = this.delegations[0];
       },
       error: (error) => {
-        this.error = 'Failed to load delegations';
+        this.error = 'Failed to load delegation';
         this.loading = false;
       }
     })
