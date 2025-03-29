@@ -51,4 +51,8 @@ export class DashboardComponent implements OnInit {
       }
     })
   }
+
+  multiplyList<T>(input: [], factor: number): T[] {
+    return [].concat(...Array(factor).fill(input))
+  }
 }

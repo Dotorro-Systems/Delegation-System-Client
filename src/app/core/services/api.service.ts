@@ -19,8 +19,8 @@ export class ApiService {
       this.apiUrl = 'http://localhost:8080';
   }
 
-  public get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`);
+  public get<T>(endpoint: string, body: {} = {}): Observable<T> {
+    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, body);
   }
 
   public getAll<T>(endpoint: string): Observable<T[]> {

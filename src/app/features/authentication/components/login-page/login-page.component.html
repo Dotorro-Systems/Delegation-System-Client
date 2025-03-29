@@ -4,20 +4,20 @@
       <div class="h-100 flex flex-column justify-content-center align-content-center">
         <h2 class="m-0">Sign in</h2>
         <br>
-        <form>
+        <form *ngIf="myForm" (ngSubmit)="login()" [formGroup]="myForm">
           <div class="row g-3">
             <div class="col-12">
               <label for="email" class="form-label">Email address</label>
-              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="john@doe.com">
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="john@doe.com" formControlName="email">
             </div>
             <div class="col-12">
               <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password">
+              <input type="password" class="form-control" id="password" formControlName="password">
             </div>
             <div class="col-12">
               <div class="form-check">
                 <label class="form-check-label" for="staySignedIn">Stay signed in</label>
-                <input type="checkbox" class="form-check-input" id="staySignedIn">
+                <input type="checkbox" class="form-check-input" id="staySignedIn" formControlName="staySignedIn">
               </div>
             </div>
           </div>
@@ -33,3 +33,5 @@
     </div>
   </div>
 </div>
+
+<app-toast/>

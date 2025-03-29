@@ -9,7 +9,7 @@ import {Department} from '../interfaces/department';
 export class DepartmentService extends ApiService {
 
   public getDepartments(): Observable<Department[]> {
-    return this.getAll<Department>("departments");
+    return this.getAll<Department>("departments/");
   }
 
   public getById(id: number): Observable<Department> {
