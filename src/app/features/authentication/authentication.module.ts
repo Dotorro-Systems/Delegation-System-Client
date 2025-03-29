@@ -19,6 +19,7 @@ import {DepartmentService} from '../departments/services/department.service';
     provideHttpClient(withInterceptorsFromDi()),
     { provide: ApiService, useClass: ApiService },
     { provide: DepartmentService, useClass: DepartmentService },
+    { provide: UserService, useClass: UserService },
   ]
 })
 export class AuthenticationModule { }
