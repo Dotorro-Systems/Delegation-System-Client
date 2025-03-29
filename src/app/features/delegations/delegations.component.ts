@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {Delegation} from '../delegations/interfaces/delegation';
 import {NgForOf, NgIf} from '@angular/common';
 import {DelegationService} from '../delegations/services/delegation.service';
@@ -8,6 +8,7 @@ import {User} from '../users/interfaces/user';
 import {UserService} from '../users/services/user.service';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
+import {defaultEquals} from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-delegations',
@@ -23,11 +24,24 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './delegations.component.css'
 })
 export class DelegationsComponent implements OnInit {
+  @ViewChild('carouselInner', { static: false }) carouselInner!: ElementRef;
   delegationId!: number;
   delegation!: Delegation;
   user!: User;
   loading: boolean = true;
   error: string = '';
+
+  scrollPosition = 0;
+  cardWidth = 200; // Szerokość jednego elementu
+
+  scrollNext() {
+    const carousel = this.carouselInner.nativeElement;
+    this.scrollPosition += this.cardWidth;
+    carousel.scrollTo({
+      left: this.scrollPosition,
+      behavior: 'smooth'
+    });
+  }
 
   constructor(
     private delegationService: DelegationService,
@@ -58,5 +72,9 @@ export class DelegationsComponent implements OnInit {
         this.loading = false;
       }
     })
+
+
   }
+
+  protected readonly defaultEquals = defaultEquals;
 }
