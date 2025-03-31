@@ -23,11 +23,11 @@ export class ApiService {
     return this.http.get<T>(`${this.apiUrl}/${endpoint}`, body);
   }
 
-  public getAll<T>(endpoint: string): Observable<T[]> {
-    return this.http.get<T[]>(`${this.apiUrl}/${endpoint}`);
+  public getAll<T>(endpoint: string, headers: {} = {}): Observable<T[]> {
+    return this.http.get<T[]>(`${this.apiUrl}/${endpoint}`, headers);
   }
 
-  public post<T>(endpoint: string, body: {}, headers: {} = {}): Observable<T> {
+  public post<T>(endpoint: string, body: {} = {}, headers: {} = {}): Observable<T> {
     return this.http.post<T>(`${this.apiUrl}/${endpoint}`, body, headers);
   }
 

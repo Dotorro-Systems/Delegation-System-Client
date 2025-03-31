@@ -36,7 +36,7 @@ export class LoginPageComponent {
     }
 
     this.apiService
-      .post<{}>(`authorization/login`, body, { responseType: 'text' })
+      .post<{}>(`users/login`, body, { responseType: 'text', withCredentials: true })
       .subscribe({
         next: (response) => {
           window.location.href = '/dashboard';

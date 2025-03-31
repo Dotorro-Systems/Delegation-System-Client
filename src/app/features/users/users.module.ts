@@ -5,6 +5,7 @@ import {UserListComponent} from './components/user-list/user-list.component';
 import {UsersRoutes} from './users.routes';
 import {UserService} from './services/user.service';
 import {MockUserService} from './services/mock-user.service';
+import {ApiService} from '../../core/services/api.service';
 
 
 
@@ -16,7 +17,8 @@ import {MockUserService} from './services/mock-user.service';
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
-    { provide: UserService, useClass: MockUserService },
+    { provide: UserService, useClass: UserService },
+    { provide: ApiService, useClass: ApiService },
   ]
 })
 export class UsersModule { }
