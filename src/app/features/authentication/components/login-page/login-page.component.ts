@@ -20,7 +20,8 @@ import {User} from '../../../users/interfaces/user';
 export class LoginPageComponent {
   myForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder,
+              private apiService: ApiService) {
     this.myForm = this.formBuilder.group({
       email: [''],
       password: [''],
@@ -29,31 +30,20 @@ export class LoginPageComponent {
   }
 
   login(): void {
-    let user!: User;
-    this.userService
-      .getUsers()
-      .subscribe(users => {
-        const filteredUsers = users.filter(u => u.email == this.myForm.value['email']);
-        if (filteredUsers.length > 0) {
-          user = filteredUsers[0];
-        }
-        else
-        {
-          ToastComponent.showToast("Login failed!", `There is no user with this email`);
-          return;
-        }
+    const body = {
+      email: this.myForm.value['email'],
+      password: this.myForm.value['password'],
+    }
 
-        this.apiService
-          .post<{}>(`users/${user.id}/authenticate`, this.myForm.value['password'])
-          .subscribe({
-            next: (response) => {
-              if (response == true)
-                window.location.href = 'dashboard';
-              else
-                ToastComponent.showToast("Login failed!", `Password and email pair is incorrect.`);
-            },
-            error: (err) => {ToastComponent.showToast("Login failed!", `${err.error}`);}
-        });
-    })
+    this.apiService
+      .post<{}>(`authorization/login`, body, { responseType: 'text' })
+      .subscribe({
+        next: (response) => {
+          window.location.href = '/dashboard';
+        },
+        error: (err) => {
+          ToastComponent.showToast("Login failed!", `${err.error}`);
+        }
+      });
   }
 }
