@@ -41,6 +41,7 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Name</th>
+        <th scope="col">Date</th>
         <th scope="col">Duration</th>
         <th scope="col">Breaks</th>
       </tr>
@@ -49,10 +50,11 @@
       <tr *ngFor="let workLog of delegation.workLogs">
         <th scope="row">{{ workLog.id }}</th>
         <td> {{ workLog.user.firstName }} {{ workLog.user.lastName }}</td>
-        <td> {{ workLog.startTime.toDateString() }} - {{ workLog.startTime.toDateString() }}</td>
+        <td> {{ workLog.startTime | date}}</td>
+        <td> {{ workLog.startTime | date: 'HH:mm' }} - {{ workLog.startTime | date: 'HH:mm' }}</td>
         <td>
           <p *ngFor="let workLogBreak of workLog.workLogBreaks">
-          {{ workLogBreak.startTime }} - {{ workLogBreak.endTime }}
+            {{ workLogBreak.startTime | date: 'HH:mm' }} - {{ workLogBreak.endTime | date: 'HH:mm' }}
           </p>
         </td>
       </tr>

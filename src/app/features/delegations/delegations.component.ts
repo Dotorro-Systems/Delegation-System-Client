@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {Delegation} from '../delegations/interfaces/delegation';
-import {NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {DelegationService} from '../delegations/services/delegation.service';
 import {DelegationsModule} from '../delegations/delegations.module';
 import {UsersModule} from '../users/users.module';
@@ -18,7 +18,8 @@ import {defaultEquals} from '@angular/core/primitives/signals';
     NgIf,
     NgForOf,
     NgbNavModule,
-    NgbNavModule
+    NgbNavModule,
+    DatePipe
   ],
   templateUrl: './delegations.component.html',
   styleUrl: './delegations.component.css'

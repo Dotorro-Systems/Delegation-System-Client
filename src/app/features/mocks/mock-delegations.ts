@@ -2,6 +2,7 @@ import {Delegation} from '../delegations/interfaces/delegation';
 import {MOCK_USERS} from './mock-users';
 import {MOCK_EXPENSES} from './mock-expenses';
 import {MOCK_NOTES} from './mock-notes';
+import {MOCK_WORK_LOGS} from './mock-work-logs';
 
 export const MOCK_DELEGATIONS: Delegation[] = [
   {
@@ -15,7 +16,7 @@ export const MOCK_DELEGATIONS: Delegation[] = [
     notes: [ MOCK_NOTES[0], MOCK_NOTES[1], MOCK_NOTES[2], MOCK_NOTES[0], MOCK_NOTES[1], MOCK_NOTES[2] ],
     users: MOCK_USERS.slice(0, 2),
     expenses: MOCK_EXPENSES.slice(0, 2),
-    workLogs: []
+    workLogs: MOCK_WORK_LOGS.slice(0, 3),
   },
   {
     id: 2,
@@ -51,3 +52,7 @@ MOCK_EXPENSES[1].delegation = MOCK_DELEGATIONS[0];
 MOCK_NOTES[0].delegation = MOCK_DELEGATIONS[0];
 MOCK_NOTES[1].delegation = MOCK_DELEGATIONS[0];
 MOCK_NOTES[2].delegation = MOCK_DELEGATIONS[0];
+
+MOCK_WORK_LOGS[0].delegation = MOCK_DELEGATIONS[2];
+MOCK_WORK_LOGS[1].delegation = MOCK_DELEGATIONS[2];
+MOCK_WORK_LOGS[2].delegation = MOCK_DELEGATIONS[1];
