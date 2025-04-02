@@ -3,8 +3,8 @@ import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ToastComponent} from '../../../../core/components/toast/toast.component';
 import {ApiService} from '../../../../core/services/api.service';
 import {CommonModule} from '@angular/common';
-import {Department} from '../../../departments/interfaces/department';
-import {DepartmentService} from '../../../departments/services/department.service';
+import {Department} from '../../../../../interfaces/department';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register-page',
@@ -20,7 +20,9 @@ export class RegisterPageComponent implements OnInit {
   myForm: FormGroup;
   departments!: Department[];
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private departmentService: DepartmentService) {
+  constructor(private formBuilder: FormBuilder,
+              private apiService: ApiService,
+              private router: Router) {
     this.myForm = this.formBuilder.group({
       firstName: [''],
       lastName: [''],
@@ -34,8 +36,7 @@ export class RegisterPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.departmentService
-      .getDepartments()
+    this.apiService.get<Department[]>('departments/')
       .subscribe(departments => {
         this.departments = departments;
     });
@@ -43,15 +44,15 @@ export class RegisterPageComponent implements OnInit {
 
   register(): void {
     if (this.myForm.value['agreement'] == false) {
-      ToastComponent.showToast("Registration failed!", `Registration failed due to agreement.`);
+      ToastComponent.showToast("Registration failed!", `In order to register check the agreement`);
       return;
     }
 
     this.apiService
-      .post<{}>('users/create', this.myForm.value)
+      .post<{}>('users/register', this.myForm.value)
       .subscribe({
         next: (response) => {
-          window.location.href = 'dashboard';
+          this.router.navigate(['/login']);
         },
         error: (err) => {ToastComponent.showToast("Registration failed!", `${err.error}`);}
       });

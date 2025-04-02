@@ -3,8 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular
 import {NgIf} from '@angular/common';
 import {ApiService} from '../../../../core/services/api.service';
 import {ToastComponent} from '../../../../core/components/toast/toast.component';
-import {UserService} from '../../../users/services/user.service';
-import {User} from '../../../users/interfaces/user';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -21,7 +20,8 @@ export class LoginPageComponent {
   myForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private router: Router) {
     this.myForm = this.formBuilder.group({
       email: [''],
       password: [''],
@@ -36,13 +36,14 @@ export class LoginPageComponent {
     }
 
     this.apiService
-      .post<{}>(`users/login`, body, { responseType: 'text', withCredentials: true })
+      .post<{}>(`users/login`, body, { responseType: "text" })
       .subscribe({
         next: (response) => {
-          window.location.href = '/dashboard';
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          ToastComponent.showToast("Login failed!", `${err.error}`);
+          if (err.status === 401)
+            ToastComponent.showToast("Login failed!", `Email and password pair doesn't match`);
         }
       });
   }
