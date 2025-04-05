@@ -3,8 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular
 import {NgIf} from '@angular/common';
 import {ApiService} from '../../../../core/services/api.service';
 import {ToastComponent} from '../../../../core/components/toast/toast.component';
-import {UserService} from '../../../users/services/user.service';
-import {User} from '../../../users/interfaces/user';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -19,9 +18,10 @@ import {User} from '../../../users/interfaces/user';
 })
 export class LoginPageComponent {
   myForm: FormGroup;
+  isLoading: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
-              private apiService: ApiService) {
+              private apiService: ApiService,) {
     this.myForm = this.formBuilder.group({
       email: [''],
       password: [''],
@@ -30,19 +30,29 @@ export class LoginPageComponent {
   }
 
   login(): void {
+    if (this.isLoading) return;
+
     const body = {
       email: this.myForm.value['email'],
       password: this.myForm.value['password'],
     }
 
     this.apiService
-      .post<{}>(`authorization/login`, body, { responseType: 'text' })
+      .post<string>(`users/login`, body, { responseType: "text" })
       .subscribe({
-        next: (response) => {
-          window.location.href = '/dashboard';
+        next: (response: string) => {
+          this.isLoading = true;
+          ToastComponent.showToast("Login success!", response);
+
+          setTimeout(() => {
+            window.location.href = '/dashboard'
+          }, 1000);
         },
         error: (err) => {
-          ToastComponent.showToast("Login failed!", `${err.error}`);
+          if (err.status === 401)
+            ToastComponent.showToast("Login failed!", `Email and password pair doesn't match`);
+
+          this.isLoading = false;
         }
       });
   }
