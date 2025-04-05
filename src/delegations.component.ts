@@ -1,20 +1,15 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {Delegation} from '../delegations/interfaces/delegation';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {DelegationService} from '../delegations/services/delegation.service';
-import {DelegationsModule} from '../delegations/delegations.module';
-import {UsersModule} from '../users/users.module';
-import {User} from '../users/interfaces/user';
-import {UserService} from '../users/services/user.service';
-import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
-import { ActivatedRoute } from '@angular/router';
-import {defaultEquals} from '@angular/core/primitives/signals';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {ActivatedRoute} from '@angular/router';
+import {Delegation} from './interfaces/delegation';
+import {User} from './interfaces/user';
+import {ApiService} from './app/core/services/api.service';
+import {ToastComponent} from './app/core/components/toast/toast.component';
 
 @Component({
   selector: 'app-delegations',
   imports: [
-    DelegationsModule,
-    UsersModule,
     NgIf,
     NgForOf,
     NgbNavModule,
@@ -30,7 +25,6 @@ export class DelegationsComponent implements OnInit {
   delegation!: Delegation;
   user!: User;
   loading: boolean = true;
-  error: string = '';
 
   scrollPosition = 0;
   cardWidth = 200; // Szerokość jednego elementu
@@ -45,8 +39,7 @@ export class DelegationsComponent implements OnInit {
   }
 
   constructor(
-    private delegationService: DelegationService,
-    private userService: UserService,
+    private apiService: ApiService,
     private route: ActivatedRoute
     ) {}
 
@@ -56,26 +49,32 @@ export class DelegationsComponent implements OnInit {
           this.delegationId = id ? +id : NaN;
         });
 
-    this.userService.getUsers().subscribe({
-      next: (data) => {
-        this.user = data[0];
-      }
+    this.apiService.getMe()
+      .subscribe({
+        next: (data) => {
+          this.user = data;
+        }
     })
 
-    this.delegationService.getById(this.delegationId).subscribe({
-      next: (data) => {
-        this.delegation = data;
-        console.log('Delegation:', this.delegation);
-        this.loading = false;
-      },
-      error: (error) => {
-        this.error = 'Failed to load delegation';
-        this.loading = false;
-      }
+    this.apiService.get<Delegation>(`delegations/${this.delegationId}`)
+      .subscribe({
+        next: (data) => {
+          if (data != null) {
+            this.delegation = {
+              ...data,
+              startDate: new Date(data.startDate),
+              endDate: new Date(data.endDate)
+            };
+          }
+          else {
+            window.location.href = '/dashboard';
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          ToastComponent.showToast("Fail", "Failed to load this delegation");
+          this.loading = false;
+        }
     })
-
-
   }
-
-  protected readonly defaultEquals = defaultEquals;
 }

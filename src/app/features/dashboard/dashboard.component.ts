@@ -5,6 +5,7 @@ import {UsersModule} from '../users/users.module';
 import {User} from '../../../interfaces/user';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../core/services/api.service';
+import {ToastComponent} from '../../core/components/toast/toast.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,27 +21,34 @@ import {ApiService} from '../../core/services/api.service';
 })
 export class DashboardComponent implements OnInit {
   delegations: Delegation[] = [];
-  user!: User;
-  selectedDelegation!: Delegation;
+  user: User | null = null;
+  selectedDelegation: Delegation | null = null;
   loading: boolean = true;
-  error: string = '';
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    this.user = this.apiService.getMe();
-
-    this.apiService.get<Delegation[]>('delegations/')
+    this.apiService.getMe()
       .subscribe({
-        next: (data) => {
-          this.delegations = data.filter(d => d.users.includes(this.user));
-          this.loading = false;
-          this.selectedDelegation = this.delegations[0];
-        },
-        error: (error) => {
-          this.error = 'Failed to load delegations';
-          this.loading = false;
+        next: data => {
+          this.user = data;
+
+          if (this.user != null) {
+            this.apiService.get<Delegation[]>('delegations/')
+              .subscribe({
+                next: (data) => {
+                  // @ts-ignore
+                  this.delegations = data.filter(d => d.users.some(user => user.id === this.user.id));
+                  this.loading = false;
+                  this.selectedDelegation = this.delegations[0];
+                },
+                error: (error) => {
+                  ToastComponent.showToast("Fail", "Failed to load delegation");
+                  this.loading = false;
+                }
+              })
+          }
         }
-    })
+      })
   }
 }

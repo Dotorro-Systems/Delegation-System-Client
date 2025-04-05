@@ -2,7 +2,6 @@
   <div class="col-lg-2">
     <h3 >My Delegations</h3>
     <div *ngIf="loading">Loading...</div>
-    <div *ngIf="error">{{ error }}</div>
 
     <ul class="nav flex-column" *ngIf="delegations.length">
       <li class="nav-item" *ngFor="let delegation of delegations">
@@ -10,7 +9,7 @@
       </li>
     </ul>
   </div>
-  <div class="col-lg-10" *ngIf="selectedDelegation != null">
+  <div class="col-lg-10" *ngIf="selectedDelegation">
     <div class="row">
       <div class="col-lg-8">
         <h2>{{ selectedDelegation.title }}</h2>
