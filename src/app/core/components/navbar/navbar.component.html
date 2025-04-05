@@ -5,23 +5,23 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="!isAuthenticated">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="login" routerLinkActive="active">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="register" routerLinkActive="active">Register</a>
         </li>
+      </ul>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="isAuthenticated">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="users/list" routerLinkActive="active">Users</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="dashboard" routerLinkActive="active">Dashboard</a>
         </li>
-        <li class="nav-item" *ngIf="isAuthenticated">
-          <a class="nav-link active" aria-current="page" routerLink="logout" routerLinkActive="active">Logout</a>
-        </li>
       </ul>
+      <a *ngIf="isAuthenticated" class="nav-link active" aria-current="page" routerLink="logout" routerLinkActive="active">Logout</a>
     </div>
   </div>
 </nav>
