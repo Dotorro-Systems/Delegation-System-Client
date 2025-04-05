@@ -3,8 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular
 import {NgIf} from '@angular/common';
 import {ApiService} from '../../../../core/services/api.service';
 import {ToastComponent} from '../../../../core/components/toast/toast.component';
-import {UserService} from '../../../users/services/user.service';
-import {User} from '../../../users/interfaces/user';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -19,8 +18,10 @@ import {User} from '../../../users/interfaces/user';
 })
 export class LoginPageComponent {
   myForm: FormGroup;
+  isLoading: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder,
+              private apiService: ApiService,) {
     this.myForm = this.formBuilder.group({
       email: [''],
       password: [''],
@@ -29,31 +30,30 @@ export class LoginPageComponent {
   }
 
   login(): void {
-    let user!: User;
-    this.userService
-      .getUsers()
-      .subscribe(users => {
-        const filteredUsers = users.filter(u => u.email == this.myForm.value['email']);
-        if (filteredUsers.length > 0) {
-          user = filteredUsers[0];
-        }
-        else
-        {
-          ToastComponent.showToast("Login failed!", `There is no user with this email`);
-          return;
-        }
+    if (this.isLoading) return;
 
-        this.apiService
-          .post<{}>(`users/${user.id}/authenticate`, this.myForm.value['password'])
-          .subscribe({
-            next: (response) => {
-              if (response == true)
-                window.location.href = 'dashboard';
-              else
-                ToastComponent.showToast("Login failed!", `Password and email pair is incorrect.`);
-            },
-            error: (err) => {ToastComponent.showToast("Login failed!", `${err.error}`);}
-        });
-    })
+    const body = {
+      email: this.myForm.value['email'],
+      password: this.myForm.value['password'],
+    }
+
+    this.apiService
+      .post<string>(`users/login`, body, { responseType: "text" })
+      .subscribe({
+        next: (response: string) => {
+          this.isLoading = true;
+          ToastComponent.showToast("Login success!", response);
+
+          setTimeout(() => {
+            window.location.href = '/dashboard'
+          }, 1000);
+        },
+        error: (err) => {
+          if (err.status === 401)
+            ToastComponent.showToast("Login failed!", `Email and password pair doesn't match`);
+
+          this.isLoading = false;
+        }
+      });
   }
 }

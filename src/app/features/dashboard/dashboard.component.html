@@ -10,7 +10,7 @@
       </li>
     </ul>
   </div>
-  <div class="col-lg-10">
+  <div class="col-lg-10" *ngIf="selectedDelegation != null">
     <div class="row">
       <div class="col-lg-8">
         <h2>{{ selectedDelegation.title }}</h2>
