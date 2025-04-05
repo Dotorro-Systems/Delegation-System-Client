@@ -17,8 +17,8 @@ export class LogoutComponent implements OnInit {
       .subscribe({
         next: response => {
           setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
+            window.location.href = '/login'
+          }, 1000);
         }
       })
   }

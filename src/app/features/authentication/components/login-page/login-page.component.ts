@@ -39,7 +39,7 @@ export class LoginPageComponent {
       .post<{}>(`users/login`, body, { responseType: "text" })
       .subscribe({
         next: (response) => {
-          this.router.navigate(['/dashboard']);
+          window.location.href = '/dashboard'
         },
         error: (err) => {
           if (err.status === 401)

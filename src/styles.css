@@ -1,3 +1,7 @@
 .debug-border {
   border: 1px solid red;
 }
+
+.no-nav-height {
+  height: calc(100vh - 56px);
+}

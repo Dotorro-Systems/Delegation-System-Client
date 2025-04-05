@@ -18,7 +18,7 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="dashboard" routerLinkActive="active">Dashboard</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isAuthenticated">
           <a class="nav-link active" aria-current="page" routerLink="logout" routerLinkActive="active">Logout</a>
         </li>
       </ul>

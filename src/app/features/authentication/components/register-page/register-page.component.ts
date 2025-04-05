@@ -29,7 +29,7 @@ export class RegisterPageComponent implements OnInit {
       email: [''],
       password: [''],
       phone: [''],
-      role: 'Employee',
+      role: 'EMPLOYEE',
       agreement: false,
       departmentId: 1,
     });

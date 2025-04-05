@@ -7,7 +7,7 @@ import {DashboardComponent} from './features/dashboard/dashboard.component';
 export const routes: Routes = [
   { path: 'users', loadChildren: () => UsersModule },
   { path: '', loadChildren: () => AuthenticationModule },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent},
   { path: '', redirectTo: '/users', pathMatch: 'full' },
 ];
 
