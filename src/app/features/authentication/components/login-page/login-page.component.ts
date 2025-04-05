@@ -18,10 +18,10 @@ import {Router} from '@angular/router';
 })
 export class LoginPageComponent {
   myForm: FormGroup;
+  isLoading: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
-              private apiService: ApiService,
-              private router: Router) {
+              private apiService: ApiService,) {
     this.myForm = this.formBuilder.group({
       email: [''],
       password: [''],
@@ -30,20 +30,29 @@ export class LoginPageComponent {
   }
 
   login(): void {
+    if (this.isLoading) return;
+
     const body = {
       email: this.myForm.value['email'],
       password: this.myForm.value['password'],
     }
 
     this.apiService
-      .post<{}>(`users/login`, body, { responseType: "text" })
+      .post<string>(`users/login`, body, { responseType: "text" })
       .subscribe({
-        next: (response) => {
-          window.location.href = '/dashboard'
+        next: (response: string) => {
+          this.isLoading = true;
+          ToastComponent.showToast("Login success!", response);
+
+          setTimeout(() => {
+            window.location.href = '/dashboard'
+          }, 1000);
         },
         error: (err) => {
           if (err.status === 401)
             ToastComponent.showToast("Login failed!", `Email and password pair doesn't match`);
+
+          this.isLoading = false;
         }
       });
   }

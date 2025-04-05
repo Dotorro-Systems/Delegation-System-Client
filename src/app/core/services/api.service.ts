@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {User} from '../../../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
   private readonly apiUrl: string;
 
   constructor(private http: HttpClient) {
-    this.http = http;
     if (typeof window !== "undefined") {
       this.apiUrl = window.location.hostname === 'localhost'
         ? 'http://localhost:8080'

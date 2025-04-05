@@ -16,7 +16,7 @@ import {ApiService} from '../../services/api.service';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent implements OnInit{
-  isAuthenticated: boolean = true;
+  isAuthenticated: boolean = false;
 
   constructor(private apiService: ApiService) { }
 
@@ -24,7 +24,6 @@ export class NavbarComponent implements OnInit{
     this.apiService.isAuthenticated()
       .subscribe({
         next: (response: boolean) => {
-          console.log(response);
           this.isAuthenticated = response;
         },
         error: () => {

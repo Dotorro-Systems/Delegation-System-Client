@@ -5,8 +5,12 @@ import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http'
 export class CustomHeaderInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const modifiedReq = req.clone({
-      setHeaders: { "X-Requested-With": "XMLHttpRequest" }
+      setHeaders: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      withCredentials: true
     });
+
     return next.handle(modifiedReq);
   }
 }
