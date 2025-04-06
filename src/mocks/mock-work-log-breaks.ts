@@ -5,7 +5,7 @@ import {MOCK_WORK_LOGS} from './mock-work-logs';
 export const MOCK_WORK_LOG_BREAKS: WorkLogBreak[] = [
   {
     id: 1,
-    workLog: MOCK_WORK_LOGS[2],
+    workLog: undefined as any,
     startTime: new Date("2024-06-05T11:00:00"),
     endTime: new Date("2024-06-05T12:00:00"),
   }

@@ -25,18 +25,8 @@ export class ApiService {
   public put<T>(endpoint: string, body: {}): Observable<T> { return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body); }
   public delete<T>(endpoint: string, body: {}): Observable<T> { return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, body); }
 
-  public getMe(): User {
-    let me = null;
-
-    this.get('users/me')
-      .subscribe({
-        next: (user) => {
-          me = user;
-        }
-      })
-
-    // @ts-ignore
-    return me;
+  public getMe(): Observable<User> {
+    return this.get('users/me');
   }
 
   public isAuthenticated(): Observable<boolean> {

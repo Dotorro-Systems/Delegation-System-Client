@@ -8,7 +8,7 @@ export const MOCK_WORK_LOGS: WorkLog[] = [
     id: 1,
     startTime: new Date("2024-04-10T08:00:00"),
     endTime: new Date("2024-04-10T17:00:00"),
-    delegation: MOCK_DELEGATIONS[2],
+    delegation: undefined as any,
     user: MOCK_USERS[0],
     workLogBreaks: [],
   },
@@ -16,7 +16,7 @@ export const MOCK_WORK_LOGS: WorkLog[] = [
     id: 2,
     startTime: new Date("2024-05-15T09:30:00"),
     endTime: new Date("2024-05-15T18:00:00"),
-    delegation: MOCK_DELEGATIONS[2],
+    delegation: undefined as any,
     user: MOCK_USERS[0],
     workLogBreaks: [],
   },
@@ -24,8 +24,10 @@ export const MOCK_WORK_LOGS: WorkLog[] = [
     id: 3,
     startTime: new Date("2024-06-05T10:00:00"),
     endTime: new Date("2024-06-05T16:30:00"),
-    delegation: MOCK_DELEGATIONS[1],
+    delegation: undefined as any,
     user: MOCK_USERS[1],
     workLogBreaks: [ MOCK_WORK_LOG_BREAKS[0] ],
   }
 ]
+
+MOCK_WORK_LOG_BREAKS[0].workLog = MOCK_WORK_LOGS[2];
