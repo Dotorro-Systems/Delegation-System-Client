@@ -2,10 +2,10 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute} from '@angular/router';
-import {Delegation} from './interfaces/delegation';
-import {User} from './interfaces/user';
-import {ApiService} from './app/core/services/api.service';
-import {ToastComponent} from './app/core/components/toast/toast.component';
+import {Delegation} from '../../../../interfaces/delegation';
+import {User} from '../../../../interfaces/user';
+import {ApiService} from '../../services/api.service';
+import {ToastComponent} from '../toast/toast.component';
 
 @Component({
   selector: 'app-delegations',
@@ -16,10 +16,10 @@ import {ToastComponent} from './app/core/components/toast/toast.component';
     NgbNavModule,
     DatePipe
   ],
-  templateUrl: './delegations.component.html',
-  styleUrl: './delegations.component.css'
+  templateUrl: './delegation-panel.component.html',
+  styleUrl: './delegation-panel.component.css'
 })
-export class DelegationsComponent implements OnInit {
+export class DelegationPanelComponent implements OnInit {
   @ViewChild('carouselInner', { static: false }) carouselInner!: ElementRef;
   delegationId!: number;
   delegation!: Delegation;
