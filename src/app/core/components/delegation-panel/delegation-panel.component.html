@@ -139,10 +139,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form>
-              <div class="form-group text-start">
-                <label class="py-2" for="content">Content</label>
-                <input class="form-control" id="content" placeholder="Enter content">
+            <form [formGroup]="noteForm" (ngSubmit)="submitNote()">
+              <div class="mb-3 form-group text-start">
+                <label for="inputNote" class="form-label">Note Content:</label>
+                <textarea class="form-control" id="inputNote"></textarea>
               </div>
             </form>
           </div>

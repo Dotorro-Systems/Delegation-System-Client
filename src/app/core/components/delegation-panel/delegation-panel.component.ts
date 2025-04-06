@@ -6,6 +6,7 @@ import {Delegation} from '../../../../interfaces/delegation';
 import {User} from '../../../../interfaces/user';
 import {ApiService} from '../../services/api.service';
 import {ToastComponent} from '../toast/toast.component';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-delegations',
@@ -14,7 +15,8 @@ import {ToastComponent} from '../toast/toast.component';
     NgForOf,
     NgbNavModule,
     NgbNavModule,
-    DatePipe
+    DatePipe,
+    ReactiveFormsModule
   ],
   templateUrl: './delegation-panel.component.html',
   styleUrl: './delegation-panel.component.css'
@@ -26,22 +28,19 @@ export class DelegationPanelComponent implements OnInit {
   user!: User;
   loading: boolean = true;
 
-  scrollPosition = 0;
-  cardWidth = 200; // Szerokość jednego elementu
-
-  scrollNext() {
-    const carousel = this.carouselInner.nativeElement;
-    this.scrollPosition += this.cardWidth;
-    carousel.scrollTo({
-      left: this.scrollPosition,
-      behavior: 'smooth'
-    });
-  }
+  noteForm: FormGroup;
+  expanseForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute
-    ) {}
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    ) {
+    this.noteForm = this.formBuilder.group({
+    })
+    this.expanseForm = this.formBuilder.group({
+    })
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -76,5 +75,12 @@ export class DelegationPanelComponent implements OnInit {
           this.loading = false;
         }
     })
+  }
+
+  submitNote(): void {
+    const body = {
+      email: this.noteForm.value['email'],
+      password: this.noteForm.value['password'],
+    }
   }
 }
