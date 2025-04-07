@@ -11,7 +11,6 @@ import {Router} from '@angular/router';
     FormsModule,
     NgIf,
     ReactiveFormsModule,
-    ToastComponent
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'

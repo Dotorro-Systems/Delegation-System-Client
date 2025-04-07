@@ -11,7 +11,6 @@ import {Router} from '@angular/router';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ToastComponent,
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css',
