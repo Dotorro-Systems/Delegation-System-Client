@@ -1,6 +1,10 @@
+<div class="p-5 pb-0" *ngIf="user && user.role != 'EMPLOYEE'">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDelegationModal">Create Delegation</button>
+</div>
+
 <div class="row m-0 p-5 dashboard">
-  <div class="col-lg-2">
-    <h3 >My Delegations</h3>
+  <div class="col-lg-2 ps-0">
+    <h3>My Delegations</h3>
     <div *ngIf="loading">Loading...</div>
 
     <ul class="nav flex-column" *ngIf="delegations.length">
@@ -16,7 +20,7 @@
         <h4>{{ selectedDelegation.origin }} - {{ selectedDelegation.destination }}</h4>
       </div>
       <div class="col-lg-4 delegation-date">
-        {{ selectedDelegation.startDate.toDateString() }} - {{ selectedDelegation.endDate.toDateString() }}
+        {{ selectedDelegation.startDate }} - {{ selectedDelegation.endDate }}
         <br>
         <a href="delegations/{{ selectedDelegation.id }}">Full View</a>
       </div>
@@ -86,6 +90,47 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createDelegationModal" tabindex="-1" aria-labelledby="createDelegationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="createDelegationModalLabel">Create New Delegation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form *ngIf="delegationForm" (ngSubmit)="createDelegation()" [formGroup]="delegationForm">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" aria-describedby="titleHelp" formControlName="title">
+            </div>
+            <div class="col-md-6">
+              <label for="origin" class="form-label">Origin</label>
+              <input type="text" class="form-control" id="origin" formControlName="origin">
+            </div>
+            <div class="col-md-6">
+              <label for="destination" class="form-label">Destination</label>
+              <input type="text" class="form-control" id="destination" formControlName="destination">
+            </div>
+            <div class="col-md-6">
+              <label for="startDate" class="form-label">Start Date</label>
+              <input id="startDate" class="form-control" type="datetime-local" formControlName="startDate">
+            </div>
+            <div class="col-md-6">
+              <label for="endDate" class="form-label">End Date</label>
+              <input id="endDate" class="form-control" type="datetime-local" formControlName="endDate">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Create</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
