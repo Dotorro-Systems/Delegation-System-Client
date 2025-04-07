@@ -25,9 +25,10 @@ import {ToastComponent} from '../../core/components/toast/toast.component';
 export class DashboardComponent implements OnInit {
   delegationForm: FormGroup;
   delegations: Delegation[] = [];
-  user: User | null = null;
-  selectedDelegation: Delegation | null = null;
+  user!: User;
+  selectedDelegation!: Delegation;
   loading: boolean = true;
+  error: string = '';
 
   constructor(private apiService: ApiService,
               private formBuilder: FormBuilder) {
@@ -46,7 +47,10 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.user = this.apiService.getMe();
+    this.apiService.getMe()
+      .subscribe({
+        next: data => {
+          this.user = data;
 
           this.apiService.get<Delegation[]>('delegations/')
             .subscribe({
