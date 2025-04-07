@@ -6,7 +6,6 @@
   <div class="col-lg-2 ps-0">
     <h3>My Delegations</h3>
     <div *ngIf="loading">Loading...</div>
-    <div *ngIf="error">{{ error }}</div>
 
     <ul class="nav flex-column" *ngIf="delegations.length">
       <li class="nav-item" *ngFor="let delegation of delegations">
