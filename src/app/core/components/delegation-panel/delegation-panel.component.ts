@@ -8,6 +8,7 @@ import {ApiService} from '../../services/api.service';
 import {ToastComponent} from '../toast/toast.component';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {Note} from '../../../../interfaces/note';
+import {Expense} from '../../../../interfaces/expense';
 
 @Component({
   selector: 'app-delegations',
@@ -28,10 +29,9 @@ export class DelegationPanelComponent implements OnInit {
   delegation!: Delegation;
   user!: User;
   loading: boolean = true;
-  notes!: Note[];
 
   noteForm: FormGroup;
-  expanseForm: FormGroup;
+  expenseForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -39,9 +39,11 @@ export class DelegationPanelComponent implements OnInit {
     private formBuilder: FormBuilder,
     ) {
     this.noteForm = this.formBuilder.group({
-      content: ['Enter note...'],
+      content: [''],
     })
-    this.expanseForm = this.formBuilder.group({
+    this.expenseForm = this.formBuilder.group({
+      description: [''],
+      amount: []
     })
   }
 
@@ -63,13 +65,7 @@ export class DelegationPanelComponent implements OnInit {
         next: (data) => {
           if (data != null) {
             this.delegation = {
-              ...data,
-              startDate: new Date(data.startDate),
-              endDate: new Date(data.endDate),
-              notes: data.notes.map(note => ({
-                ...note,
-                createdAt: new Date(note.createdAt)
-              }))
+              ...data
             };
           }
           else {
@@ -84,16 +80,33 @@ export class DelegationPanelComponent implements OnInit {
     })
   }
 
+  submitExpense(): void {
+    let body = {
+      ...this.expenseForm.value,
+      delegationId: this.delegationId,
+      userId: this.user.id,
+      createdAt: new Date()
+    }
+
+    this.apiService
+      .post<Expense>(`expenses/create`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Expense has been added successfully!");
+          this.delegation.expenses.push(data);
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+      });
+  }
+
   submitNote(): void {
     let body = {
       ...this.noteForm.value,
       delegationId: this.delegationId,
       userId: this.user.id,
       createdAt: new Date()
-    }
-
-    if (this.noteForm.valid) {
-      console.log(this.noteForm.value);
     }
 
     this.apiService
@@ -107,5 +120,9 @@ export class DelegationPanelComponent implements OnInit {
           ToastComponent.showToast("Fail!", `${err.error}`);
         }
         });
+  }
+
+  transformDate(date: any): string {
+    return new Date(date).toDateString();
   }
 }
