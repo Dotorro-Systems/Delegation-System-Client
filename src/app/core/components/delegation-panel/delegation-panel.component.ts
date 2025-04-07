@@ -6,7 +6,8 @@ import {Delegation} from '../../../../interfaces/delegation';
 import {User} from '../../../../interfaces/user';
 import {ApiService} from '../../services/api.service';
 import {ToastComponent} from '../toast/toast.component';
-import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {Note} from '../../../../interfaces/note';
 
 @Component({
   selector: 'app-delegations',
@@ -27,6 +28,7 @@ export class DelegationPanelComponent implements OnInit {
   delegation!: Delegation;
   user!: User;
   loading: boolean = true;
+  notes!: Note[];
 
   noteForm: FormGroup;
   expanseForm: FormGroup;
@@ -37,10 +39,7 @@ export class DelegationPanelComponent implements OnInit {
     private formBuilder: FormBuilder,
     ) {
     this.noteForm = this.formBuilder.group({
-      delegationId: [this.delegationId],  // Możesz przypisać wartości domyślne, jeśli są dostępne
-      userId: [this.user?.id],            // Wartość domyślna dla userId, jeśli jest dostępna
-      content: [''],                      // Treść notatki
-      createdAt: [new Date().toISOString().slice(0, 19)]
+      content: ['Enter note...'],
     })
     this.expanseForm = this.formBuilder.group({
     })
@@ -66,7 +65,11 @@ export class DelegationPanelComponent implements OnInit {
             this.delegation = {
               ...data,
               startDate: new Date(data.startDate),
-              endDate: new Date(data.endDate)
+              endDate: new Date(data.endDate),
+              notes: data.notes.map(note => ({
+                ...note,
+                createdAt: new Date(note.createdAt)
+              }))
             };
           }
           else {
@@ -82,11 +85,11 @@ export class DelegationPanelComponent implements OnInit {
   }
 
   submitNote(): void {
-    const body = {
+    let body = {
+      ...this.noteForm.value,
       delegationId: this.delegationId,
       userId: this.user.id,
-      content: this.noteForm.value['content'],
-      createdAt: new Date().toISOString().slice(0, 19)
+      createdAt: new Date()
     }
 
     if (this.noteForm.valid) {
@@ -94,6 +97,15 @@ export class DelegationPanelComponent implements OnInit {
     }
 
     this.apiService
-      .post<string>(`notes/create`, body)
+      .post<Note>(`notes/create`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Note has been added successfully!");
+          this.delegation.notes.push(data);
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+        });
   }
 }
