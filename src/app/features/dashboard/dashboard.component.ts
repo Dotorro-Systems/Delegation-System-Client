@@ -52,10 +52,10 @@ export class DashboardComponent implements OnInit {
         next: data => {
           this.user = data;
 
-          this.apiService.get<Delegation[]>('delegations/')
+          this.apiService.get<Delegation[]>(`delegations/`)
             .subscribe({
               next: (data) => {
-                this.delegations = data.filter(d => d.users.includes(this.user));
+                this.delegations = data;
                 this.loading = false;
                 this.selectedDelegation = this.delegations[0];
               },
@@ -76,22 +76,22 @@ export class DashboardComponent implements OnInit {
 
     this.apiService
       .post<Delegation>(`delegations/create`, body)
-      .subscribe({
-        next: (data) => {
-          this.apiService.post<{}>(`delegationDepartments/create`, { departmentId: this.user.department.id, delegationId: data.id })
-            .subscribe({
-              next: () => {
-                ToastComponent.showToast("Success!", "Delegation has been created successfully!");
-                this.delegations.push(data);
-              },
-              error: (err) => {
-                ToastComponent.showToast("Fail!", `${err.error}`);
-              }
-            })
-        },
-        error: (err) => {
-          ToastComponent.showToast("Fail!", `${err.error}`);
-        }
-      });
+        .subscribe({
+          next: (data) => {
+            this.apiService.post<{}>(`delegationDepartments/create`, { departmentId: this.user.department.id, delegationId: data.id })
+              .subscribe({
+                next: () => {
+                  ToastComponent.showToast("Success!", "Delegation has been created successfully!");
+                  this.delegations.push(data);
+                },
+                error: (err) => {
+                  ToastComponent.showToast("Fail!", `${err.error}`);
+                }
+              })
+          },
+          error: (err) => {
+            ToastComponent.showToast("Fail!", `${err.error}`);
+          }
+        });
   }
 }
