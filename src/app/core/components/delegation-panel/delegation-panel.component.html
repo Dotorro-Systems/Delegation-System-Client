@@ -142,13 +142,13 @@
             <form [formGroup]="noteForm" (ngSubmit)="submitNote()">
               <div class="mb-3 form-group text-start">
                 <label for="inputNote" class="form-label">Note Content:</label>
-                <textarea class="form-control" id="inputNote"></textarea>
+                <textarea class="form-control" id="inputNote" formControlName="content"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Submit</button>
           </div>
         </div>
       </div>

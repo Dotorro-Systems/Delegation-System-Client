@@ -37,6 +37,10 @@ export class DelegationPanelComponent implements OnInit {
     private formBuilder: FormBuilder,
     ) {
     this.noteForm = this.formBuilder.group({
+      delegationId: [this.delegationId],  // Możesz przypisać wartości domyślne, jeśli są dostępne
+      userId: [this.user?.id],            // Wartość domyślna dla userId, jeśli jest dostępna
+      content: [''],                      // Treść notatki
+      createdAt: [new Date().toISOString().slice(0, 19)]
     })
     this.expanseForm = this.formBuilder.group({
     })
@@ -79,8 +83,17 @@ export class DelegationPanelComponent implements OnInit {
 
   submitNote(): void {
     const body = {
-      email: this.noteForm.value['email'],
-      password: this.noteForm.value['password'],
+      delegationId: this.delegationId,
+      userId: this.user.id,
+      content: this.noteForm.value['content'],
+      createdAt: new Date().toISOString().slice(0, 19)
     }
+
+    if (this.noteForm.valid) {
+      console.log(this.noteForm.value);
+    }
+
+    this.apiService
+      .post<string>(`notes/create`, body)
   }
 }
