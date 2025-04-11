@@ -7,11 +7,14 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../core/services/api.service';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ToastComponent} from '../../core/components/toast/toast.component';
+import {DelegationsService} from '../delegations/services/delegations.service';
+import {NotesService} from '../notes/services/notes.service';
+import {ExpensesService} from '../expenses/services/expenses.service';
+import {FeaturesModule} from '../features.module';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
-    UsersModule,
     NgIf,
     NgForOf,
     NgbNavModule,
@@ -20,8 +23,9 @@ import {ToastComponent} from '../../core/components/toast/toast.component';
     ReactiveFormsModule
   ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrl: './dashboard.component.css',
 })
+
 export class DashboardComponent implements OnInit {
   delegationForm: FormGroup;
   delegations: Delegation[] = [];
@@ -31,7 +35,9 @@ export class DashboardComponent implements OnInit {
   error: string = '';
 
   constructor(private apiService: ApiService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private delegationsService: DelegationsService,
+  ) {
     const tomorrow: Date = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const nextMonth = new Date();
@@ -52,10 +58,10 @@ export class DashboardComponent implements OnInit {
         next: data => {
           this.user = data;
 
-          this.apiService.get<Delegation[]>(`delegations/`)
+          this.apiService.get<Delegation[]>(`delegations/in-my-department`)
             .subscribe({
               next: (data) => {
-                this.delegations = data;
+                this.delegations = data.map(d => this.delegationsService.parseDelegation(d));
                 this.loading = false;
                 this.selectedDelegation = this.delegations[0];
               },
@@ -82,7 +88,7 @@ export class DashboardComponent implements OnInit {
               .subscribe({
                 next: () => {
                   ToastComponent.showToast("Success!", "Delegation has been created successfully!");
-                  this.delegations.push(data);
+                  this.delegations.push(this.delegationsService.parseDelegation(data));
                 },
                 error: (err) => {
                   ToastComponent.showToast("Fail!", `${err.error}`);

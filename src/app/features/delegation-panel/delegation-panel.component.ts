@@ -2,13 +2,16 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute} from '@angular/router';
-import {Delegation} from '../../../../interfaces/delegation';
-import {User} from '../../../../interfaces/user';
-import {ApiService} from '../../services/api.service';
-import {ToastComponent} from '../toast/toast.component';
+import {Delegation} from '../../../interfaces/delegation';
+import {User} from '../../../interfaces/user';
+import {ApiService} from '../../core/services/api.service';
+import {ToastComponent} from '../../core/components/toast/toast.component';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {Note} from '../../../../interfaces/note';
-import {Expense} from '../../../../interfaces/expense';
+import {Note} from '../../../interfaces/note';
+import {Expense} from '../../../interfaces/expense';
+import {DelegationsService} from '../delegations/services/delegations.service';
+import {NotesService} from '../notes/services/notes.service';
+import {ExpensesService} from '../expenses/services/expenses.service';
 
 @Component({
   selector: 'app-delegations',
@@ -28,7 +31,6 @@ export class DelegationPanelComponent implements OnInit {
   delegationId!: number;
   delegation!: Delegation;
   user!: User;
-  loading: boolean = true;
 
   noteForm: FormGroup;
   expenseForm: FormGroup;
@@ -37,6 +39,9 @@ export class DelegationPanelComponent implements OnInit {
     private apiService: ApiService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private delegationsService: DelegationsService,
+    private notesService: NotesService,
+    private expensesService: ExpensesService,
     ) {
     this.noteForm = this.formBuilder.group({
       content: [''],
@@ -62,20 +67,11 @@ export class DelegationPanelComponent implements OnInit {
 
     this.apiService.get<Delegation>(`delegations/${this.delegationId}`)
       .subscribe({
-        next: (data) => {
-          if (data != null) {
-            this.delegation = {
-              ...data
-            };
-          }
-          else {
-            window.location.href = '/dashboard';
-          }
-          this.loading = false;
+        next: (data: Delegation) => {
+          this.delegation = this.delegationsService.parseDelegation(data);
         },
         error: (error) => {
-          ToastComponent.showToast("Fail", "Failed to load this delegation");
-          this.loading = false;
+          ToastComponent.showToast("Fail", error.err)
         }
     })
   }
@@ -93,7 +89,7 @@ export class DelegationPanelComponent implements OnInit {
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Expense has been added successfully!");
-          this.delegation.expenses.push(data);
+          this.delegation.expenses.push(this.expensesService.parseExpense(data));
         },
         error: (err) => {
           ToastComponent.showToast("Fail!", `${err.error}`);
@@ -114,7 +110,7 @@ export class DelegationPanelComponent implements OnInit {
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Note has been added successfully!");
-          this.delegation.notes.push(data);
+          this.delegation.notes.push(this.notesService.parseNote(data));
         },
         error: (err) => {
           ToastComponent.showToast("Fail!", `${err.error}`);
@@ -122,7 +118,7 @@ export class DelegationPanelComponent implements OnInit {
         });
   }
 
-  transformDate(date: any): string {
-    return new Date(date).toDateString();
+  getColorByStatus(status: string) {
+
   }
 }

@@ -20,7 +20,7 @@
         <h4>{{ selectedDelegation.origin }} - {{ selectedDelegation.destination }}</h4>
       </div>
       <div class="col-lg-4 delegation-date">
-        {{ selectedDelegation.startDate }} - {{ selectedDelegation.endDate }}
+        {{ selectedDelegation.startDate.toLocaleDateString() }} - {{ selectedDelegation.endDate.toLocaleDateString() }}
         <br>
         <a href="delegations/{{ selectedDelegation.id }}">Full View</a>
       </div>
@@ -72,7 +72,7 @@
                   <p class="card-text">Add new expenses from the <a href="delegations/{{ selectedDelegation.id }}">full view</a>.</p>
                 </div>
               </div>
-              <div class="col card" *ngFor="let expense of selectedDelegation.expenses.slice(0, 4)">
+              <div class="col card" *ngFor="let expense of selectedDelegation.expenses.slice(0, 3)">
                 <div class="card-body">
                   <h5 class="card-title">{{ expense.user.firstName }} {{ expense.user.lastName }}</h5>
                   <h6 class="card-subtitle mb-2 text-body-secondary">{{ expense.createdAt.toDateString() }}</h6>
@@ -82,8 +82,8 @@
               </div>
               <div class="col card" *ngIf="selectedDelegation.expenses.length > 3">
                 <div class="card-body">
-                  <h5 class="card-title">More Notes Available</h5>
-                  <p class="card-text">View the rest of notes in <a href="delegations/{{ selectedDelegation.id }}">full view</a>.</p>
+                  <h5 class="card-title">More Expenses Available</h5>
+                  <p class="card-text">View the rest of expenses in <a href="delegations/{{ selectedDelegation.id }}">full view</a>.</p>
                 </div>
               </div>
             </div>

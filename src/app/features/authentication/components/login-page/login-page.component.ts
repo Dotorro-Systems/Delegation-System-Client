@@ -31,13 +31,8 @@ export class LoginPageComponent {
   login(): void {
     if (this.isLoading) return;
 
-    const body = {
-      email: this.myForm.value['email'],
-      password: this.myForm.value['password'],
-    }
-
     this.apiService
-      .post<string>(`users/login`, body, { responseType: "text" })
+      .post<string>(`users/login`, this.myForm.value, { responseType: "text" })
       .subscribe({
         next: (response: string) => {
           this.isLoading = true;

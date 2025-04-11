@@ -5,7 +5,7 @@ import {AuthenticationModule} from './features/authentication/authentication.mod
 import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {AuthenticationGuard} from './core/guards/AuthenticationGuard';
 import {PageNotFoundComponent} from './core/components/page-not-found/page-not-found.component';
-import {DelegationPanelComponent} from './core/components/delegation-panel/delegation-panel.component';
+import {DelegationPanelComponent} from './features/delegation-panel/delegation-panel.component';
 
 export const routes: Routes = [
   { path: 'users', loadChildren: () => UsersModule, canActivate: [ AuthenticationGuard ] },
