@@ -89,7 +89,7 @@ export class DelegationPanelComponent implements OnInit {
     }
 
     this.apiService
-      .post<Expense>(`expenses/create`, body)
+      .post<Expense>(`expense/create`, body)
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Expense has been added successfully!");
