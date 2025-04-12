@@ -1,24 +1,27 @@
-<div class="container my-4" *ngIf="delegation">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h4 class="mb-0">{{ delegation.title }}</h4>
-      <div>{{ delegation.startDate | date:'mediumDate' }} - {{ delegation.endDate | date:'mediumDate' }}</div>
-      <div><span class="badge bg-success">{{ delegation.status }}</span></div>
+<div *ngIf="delegation">
+  <div class="card shadow-sm m-0 border-0">
+    <div class="card-header bg-dark-subtle text-white">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex gap-2">
+            <h4 class="mb-0 text-center">{{ delegation.title }}</h4>
+            <div class="d-flex align-items-center mt-1">
+              <span class="badge bg-success">{{ delegation.status }}</span>
+            </div>
+          </div>
+          <div>{{ delegation.startDate | date:'mediumDate' }} - {{ delegation.endDate | date:'mediumDate' }}</div>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-end">
+          <span>{{ delegation.origin }} -> {{ delegation.destination }}</span>
+        </div>
+      </div>
     </div>
     <div class="card-body">
       <div class="row mb-3">
-        <div class="col-md-12 row text-center">
-          <div class="col-md-6">
-            <p><strong>From:</strong> {{ delegation.origin }}</p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>To:</strong> {{ delegation.destination }}</p>
-          </div>
-        </div>
         <div class="col-md-12 d-flex justify-content-center">
-          <button type="button" class="btn btn-primary px-4 mx-3">Start</button>
-          <button type="button" class="btn btn-secondary px-4 mx-3">Pause</button>
-          <button type="button" class="btn btn-danger px-4 mx-3">Stop</button>
+          <button type="button" class="btn btn-primary px-4 mx-3"><i class="bi bi-play-fill"></i></button>
+          <button type="button" class="btn btn-secondary px-4 mx-3" disabled><i class="bi bi-pause-fill"></i></button>
+          <button type="button" class="btn btn-danger px-4 mx-3" disabled><i class="bi bi-stop-fill"></i></button>
         </div>
       </div>
 
@@ -26,7 +29,7 @@
       <div class="mb-4">
         <div class="d-flex gap-2 mb-2">
           <h5 class="m-0">Users</h5>
-          <span class="d-flex align-items-center" style="color: mediumpurple;"><h4 class="m-0"><i type="button" class="bi bi-plus-square"></i></h4></span>
+          <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square"></i></h5></span>
         </div>
         <div class="list-group">
           <div class="d-flex gap-2">
@@ -44,7 +47,7 @@
       <div class="mb-4">
         <div class="d-flex gap-2 mb-2">
           <h5 class="m-0">Notes</h5>
-          <span class="d-flex align-items-center" style="color: mediumpurple;"><h4 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addNotesModal"></i></h4></span>
+          <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addNotesModal"></i></h5></span>
         </div>
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let note of delegation.notes">
@@ -59,21 +62,41 @@
       <div class="mb-4">
         <div class="d-flex gap-2 mb-2">
           <h5 class="m-0">Expenses</h5>
-          <span class="d-flex align-items-center" style="color: mediumpurple;"><h4 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addExpenseModal"></i></h4></span>
+          <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addExpenseModal"></i></h5></span>
         </div>
         <table class="table table-striped">
           <thead>
           <tr>
+            <th>Owner</th>
+            <th>Date</th>
             <th>Description</th>
             <th>Amount</th>
-            <th>Date</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let expense of delegation.expenses">
+            <td>{{ expense.user.firstName }} {{ expense.user.lastName }}</td>
+            <td>{{ expense.createdAt | date:'mediumDate' }}</td>
             <td>{{ expense.description }}</td>
             <td>${{ expense.amount }}</td>
-            <td>{{ expense.createdAt | date:'mediumDate' }}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn py-0" data-bs-toggle="dropdown" aria-expanded="false"><h5 class="m-0"><i class="bi bi-list"></i></h5></button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="delegation.expenses.length > 0">
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td>${{ getTotalDelegationCost() }}</td>
+            <td></td>
           </tr>
           </tbody>
         </table>
@@ -121,11 +144,11 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="expenseForm" (ngSubmit)="submitExpense()">
-          <div class="form-group text-start">
+          <div class="form-group">
             <label class="py-2" for="amount">Amount</label>
             <input class="form-control" id="amount" placeholder="Enter amount" formControlName="amount">
           </div>
-          <div class="form-group text-start">
+          <div class="form-group mb-3">
             <label class="py-2 form-label" for="inputExpense">Description</label>
             <textarea class="form-control" id="inputExpense" placeholder="Enter description" formControlName="description"></textarea>
           </div>
@@ -148,13 +171,13 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="noteForm" (ngSubmit)="submitNote()">
-          <div class="mb-3 form-group text-start">
+          <div class="mb-3 form-group">
             <label for="inputNote" class="form-label">Note Content:</label>
             <textarea class="form-control" id="inputNote" placeholder="Enter note" formControlName="content"></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary"  data-bs-dismiss="modal">Submit</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
           </div>
         </form>
       </div>

@@ -118,6 +118,13 @@ export class DelegationPanelComponent implements OnInit {
         });
   }
 
+  getTotalDelegationCost(): number {
+    return this.delegation.expenses
+      .reduce(function (a, b) {
+        return a + b.amount;
+      }, 0);
+  }
+
   getColorByStatus(status: string) {
 
   }

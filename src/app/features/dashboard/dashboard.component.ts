@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit {
       destination: ['Destination'],
       startDate: new FormControl(tomorrow.toISOString().slice(0, 16)),
       endDate: new FormControl(nextMonth.toISOString().slice(0, 16)),
+      addSelf: false,
     });
   }
 
@@ -87,8 +88,25 @@ export class DashboardComponent implements OnInit {
             this.apiService.post<{}>(`delegationDepartments/create`, { departmentId: this.user.department.id, delegationId: data.id })
               .subscribe({
                 next: () => {
+                  let newDelegation = this.delegationsService.parseDelegation(data);
+
+                  if (this.delegationForm.value['addSelf'])
+                  {
+                    this.apiService.post<{}>(`delegationUsers/create`, { delegationId: data.id, userId: this.user.id })
+                      .subscribe({
+                        next: () => {
+
+                        },
+                        error: (err) => {
+                          ToastComponent.showToast("Fail!", `${err.error}`);
+                        }
+                      })
+
+                    newDelegation.users.push(this.user);
+                  }
+
                   ToastComponent.showToast("Success!", "Delegation has been created successfully!");
-                  this.delegations.push(this.delegationsService.parseDelegation(data));
+                  this.delegations.push(newDelegation);
                 },
                 error: (err) => {
                   ToastComponent.showToast("Fail!", `${err.error}`);
