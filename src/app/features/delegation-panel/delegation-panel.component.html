@@ -6,13 +6,13 @@
           <div class="d-flex gap-2">
             <h4 class="mb-0 text-center">{{ delegation.title }}</h4>
             <div class="d-flex align-items-center mt-1">
-              <span class="badge bg-success">{{ delegation.status }}</span>
+              <span class="badge {{ getColorByStatus(delegation.status) }}">{{ delegation.status }}</span>
             </div>
           </div>
           <div>{{ delegation.startDate | date:'mediumDate' }} - {{ delegation.endDate | date:'mediumDate' }}</div>
         </div>
         <div class="col-md-6 d-flex align-items-center justify-content-end">
-          <span>{{ delegation.origin }} -> {{ delegation.destination }}</span>
+          <span>{{ delegation.origin }} <i class="bi bi-arrow-right"></i> {{ delegation.destination }}</span>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <div class="mb-4">
         <div class="d-flex gap-2 mb-2">
           <h5 class="m-0">Users</h5>
-          <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square"></i></h5></span>
+          <span class="d-flex align-items-center" style="color: mediumpurple;" *ngIf="user && user.role != 'EMPLOYEE'"><h5 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addUsersModal"></i></h5></span>
         </div>
         <div class="list-group">
           <div class="d-flex gap-2">
@@ -52,6 +52,7 @@
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let note of delegation.notes">
             <h5 class="m-0">{{ note.user.firstName }} {{ note.user.lastName }}</h5>
+            <i type="button" class="bi bi-trash3-fill float-end" (click)="deleteNote(note.id)" *ngIf="note.user.id == user.id"></i>
             <small class="text-secondary">{{ note.createdAt | date:'mediumDate' }}</small>
             <p class="mb-0">{{ note.content }}</p>
           </li>
@@ -174,6 +175,31 @@
           <div class="mb-3 form-group">
             <label for="inputNote" class="form-label">Note Content:</label>
             <textarea class="form-control" id="inputNote" placeholder="Enter note" formControlName="content"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addUsersModal" tabindex="-1" aria-labelledby="addUsersModalLongTitle" aria-hidden="true" *ngIf="usersForm && user && user.role != 'EMPLOYEE'">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUsersModalTitle">Add note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="usersForm" (ngSubmit)="updateUsers()">
+          <div class="mb-3 form-group">
+            <div class="form-check" *ngFor="let user of usersInMyDepartment">
+              <label class="form-check-label" for="{{ user.id }}">{{ user.firstName }} {{ user.lastName }}</label>
+              <input type="checkbox" class="form-check-input" id="{{ user.id }}" formControlName="{{ user.id }}" value="{{ user.id }}">
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

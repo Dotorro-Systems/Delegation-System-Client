@@ -31,9 +31,11 @@ export class DelegationPanelComponent implements OnInit {
   delegationId!: number;
   delegation!: Delegation;
   user!: User;
+  usersInMyDepartment!: User[];
 
   noteForm: FormGroup;
   expenseForm: FormGroup;
+  usersForm!: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -43,49 +45,69 @@ export class DelegationPanelComponent implements OnInit {
     private notesService: NotesService,
     private expensesService: ExpensesService,
     ) {
+
     this.noteForm = this.formBuilder.group({
       content: [''],
-    })
+    });
+
     this.expenseForm = this.formBuilder.group({
       description: [''],
       amount: []
-    })
-  }
+    });
 
-  ngOnInit() {
     this.route.paramMap.subscribe(params => {
-          const id = params.get('id');
-          this.delegationId = id ? +id : NaN;
-        });
-
-    this.apiService.getMe()
-      .subscribe({
-        next: (data) => {
-          this.user = data;
-        }
-    })
+      const id = params.get('id');
+      this.delegationId = id ? +id : NaN;
+    });
 
     this.apiService.get<Delegation>(`delegations/${this.delegationId}`)
       .subscribe({
         next: (data: Delegation) => {
           this.delegation = this.delegationsService.parseDelegation(data);
+
+          this.apiService.get<User[]>(`users/in-my-department`)
+            .subscribe({
+              next: (data: User[]) => {
+                this.usersInMyDepartment = data;
+
+                this.usersForm = this.formBuilder.group({
+                  ...this.usersInMyDepartment.reduce<Record<string, FormControl>>((acc, option) => {
+                    const participatesInDelegation = this.delegation.users.filter(u => u.id.toString() == option.id.toString()).length == 1;
+                    acc[option.id.toString()] = new FormControl(participatesInDelegation);
+                    return acc;
+                  }, {})
+                });
+              },
+              error: (err) => {
+
+              }
+            });
         },
         error: (error) => {
           ToastComponent.showToast("Fail", error.err)
         }
-    })
+      });
+  }
+
+  ngOnInit() {
+    this.apiService.getMe()
+      .subscribe({
+        next: (data) => {
+          this.user = data;
+        }
+    });
   }
 
   submitExpense(): void {
     let body = {
       ...this.expenseForm.value,
-      delegationId: this.delegationId,
+      delegationId: this.delegation.id,
       userId: this.user.id,
       createdAt: new Date()
     }
 
     this.apiService
-      .post<Expense>(`expense/create`, body)
+      .post<Expense>(`expenses/create`, body)
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Expense has been added successfully!");
@@ -93,6 +115,7 @@ export class DelegationPanelComponent implements OnInit {
         },
         error: (err) => {
           ToastComponent.showToast("Fail!", `${err.error}`);
+          console.log(err);
         }
       });
   }
@@ -126,6 +149,42 @@ export class DelegationPanelComponent implements OnInit {
   }
 
   getColorByStatus(status: string) {
+    if (status == 'Planned') return 'bg-warning';
+    if (status == 'Active') return 'bg-success';
+    if (status == 'Finished') return 'bg-danger';
 
+    return 'bg-danger';
+  }
+
+  updateUsers() {
+    for (const user of this.usersInMyDepartment) {
+      if (this.usersForm.value[user.id.toString()] == true && this.delegation.users.filter(u => u.id.toString() === user.id.toString()).length == 0) {
+        this.apiService.post<User>(`delegations/add-user`, { delegationId: this.delegation.id, userId: user.id })
+          .subscribe({
+            next: (data: User) => {
+              this.delegation.users.push(data);
+            }
+        })
+      }
+
+      if (this.usersForm.value[user.id.toString()] == false && this.delegation.users.filter(u => u.id.toString() === user.id.toString()).length > 0)
+      {
+        this.apiService.delete<{}>(`delegations/${this.delegation.id}/delete-user/${user.id}`, { responseType: 'text' })
+          .subscribe({
+            next: () => {
+              this.delegation.users = this.delegation.users.filter(u => u.id !== user.id);
+            }
+          })
+      }
+    }
+  }
+
+  deleteNote(id: number) {
+    this.apiService.delete<{}>(`notes/${id}`, )
+      .subscribe({
+          next: () => {
+            this.delegation.notes = this.delegation.notes.filter(note => note.id !== id);
+          }
+      });
   }
 }
