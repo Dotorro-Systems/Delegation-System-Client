@@ -27,6 +27,7 @@ export class RegisterPageComponent implements OnInit {
       lastName: [''],
       email: [''],
       password: [''],
+      confirmPassword: [''],
       phone: [''],
       role: 'EMPLOYEE',
       agreement: false,
@@ -42,8 +43,14 @@ export class RegisterPageComponent implements OnInit {
   }
 
   register(): void {
+    if (this.myForm.value['password'] != this.myForm.value['confirmPassword'])
+    {
+      ToastComponent.showToast("Fail!", 'Passwords do not match');
+      return;
+    }
+
     if (this.myForm.value['agreement'] == false) {
-      ToastComponent.showToast("Registration failed!", `In order to register check the agreement`);
+      ToastComponent.showToast("Fail!", `In order to register check the agreement`);
       return;
     }
 
