@@ -85,14 +85,14 @@ export class DashboardComponent implements OnInit {
       .post<Delegation>(`delegations/create`, body)
         .subscribe({
           next: (data) => {
-            this.apiService.post<{}>(`delegationDepartments/create`, { departmentId: this.user.department.id, delegationId: data.id })
+            this.apiService.post<{}>(`delegations/add-department`, { departmentId: this.user.department.id, delegationId: data.id })
               .subscribe({
                 next: () => {
                   let newDelegation = this.delegationsService.parseDelegation(data);
 
                   if (this.delegationForm.value['addSelf'])
                   {
-                    this.apiService.post<{}>(`delegationUsers/create`, { delegationId: data.id, userId: this.user.id })
+                    this.apiService.post<{}>(`delegations/add-user`, { delegationId: data.id, userId: this.user.id })
                       .subscribe({
                         next: () => {
 
