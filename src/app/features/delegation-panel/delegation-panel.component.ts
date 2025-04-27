@@ -9,6 +9,7 @@ import {ToastComponent} from '../../core/components/toast/toast.component';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {Note} from '../../../interfaces/note';
 import {Expense} from '../../../interfaces/expense';
+import {WorkLog} from '../../../interfaces/work-log';
 import {DelegationsService} from '../delegations/services/delegations.service';
 import {NotesService} from '../notes/services/notes.service';
 import {ExpensesService} from '../expenses/services/expenses.service';
@@ -33,11 +34,13 @@ export class DelegationPanelComponent implements OnInit {
   delegation!: Delegation;
   user!: User;
   usersInMyDepartment!: User[];
+  selectedWorkLogId!: number;
 
   noteForm: FormGroup;
   expenseForm: FormGroup;
   usersForm!: FormGroup;
   workLogForm: FormGroup;
+  workLogEditForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -54,6 +57,11 @@ export class DelegationPanelComponent implements OnInit {
     });
 
     this.workLogForm = this.formBuilder.group({
+      startTime: [],
+      endTime: [],
+    })
+
+    this.workLogEditForm = this.formBuilder.group({
       startTime: [],
       endTime: [],
     })
@@ -106,6 +114,10 @@ export class DelegationPanelComponent implements OnInit {
     });
   }
 
+  selectWorkLogForEdit(id: number): void {
+    this.selectedWorkLogId = id;
+  }
+
   submitExpense(): void {
     let body = {
       ...this.expenseForm.value,
@@ -150,8 +162,6 @@ export class DelegationPanelComponent implements OnInit {
   }
 
   submitWorkLog(): void {
-    console.log("startTime:", this.workLogForm.value.startTime);
-    console.log("endTime:", this.workLogForm.value.endTime);
     let body = {
       ...this.workLogForm.value,
       delegationId: this.delegationId,
@@ -159,11 +169,34 @@ export class DelegationPanelComponent implements OnInit {
     }
 
     this.apiService
-      .post<Note>(`workLogs/create`, body)
+      .post<WorkLog>(`workLogs/create`, body)
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Work Log has been added successfully!");
           this.delegation.workLogs.push(this.workLogService.parseNote(data));
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+      });
+  }
+
+  editWorkLog() {
+    let body = {
+      ...this.workLogEditForm.value,
+      delegationId: this.delegationId,
+      userId: this.user.id,
+    }
+
+    this.apiService
+      .put<WorkLog>(`workLogs/${this.selectedWorkLogId}`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Work Log has been editted successfully!");
+          const index = this.delegation.workLogs.findIndex(workLog => workLog.id === data.id);
+          if (index !== -1) {
+            this.delegation.workLogs[index] = this.workLogService.parseNote(data);
+          }
         },
         error: (err) => {
           ToastComponent.showToast("Fail!", `${err.error}`);
@@ -215,6 +248,15 @@ export class DelegationPanelComponent implements OnInit {
           next: () => {
             this.delegation.notes = this.delegation.notes.filter(note => note.id !== id);
           }
+      });
+  }
+
+  deleteWorkLog(id: number) {
+    this.apiService.delete<{}>(`workLogs/${id}`, )
+      .subscribe({
+        next: () => {
+          this.delegation.workLogs = this.delegation.workLogs.filter(workLog => workLog.id !== id);
+        }
       });
   }
 }

@@ -79,8 +79,9 @@
                   <h5 class="m-0"><i class="bi bi-list"></i></h5>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="workLogDropdown">
-                  <li><a class="dropdown-item" href="#">Edit</a></li>
-                  <li><a class="dropdown-item" href="#">Delete</a></li>
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
               </div>
             </td>
@@ -124,9 +125,8 @@
                   <h5 class="m-0"><i class="bi bi-list"></i></h5>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editWorkLogModal" (click)="selectWorkLogForEdit(workLog.id)">Edit</a></li>
+                  <li><a class="dropdown-item" (click)="deleteWorkLog(workLog.id)">Delete</a></li>
                 </ul>
               </div>
             </td>
@@ -218,24 +218,53 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addWorkLogLongTitle">Add note</h5>
+        <h5 class="modal-title" id="addWorkLogLongTitle">Add Work Log</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="workLogForm" (ngSubmit)="submitWorkLog()">
           <div class="mb-3 form-group">
             <div class="col-md-6">
-              <label for="startTime" class="form-label">Start Date</label>
-              <input id="startTime" class="form-control" type="datetime-local" formControlName="startTime">
+              <label for="addStartTime" class="form-label">Start Date</label>
+              <input id="addStartTime" class="form-control" type="datetime-local" formControlName="startTime">
             </div>
             <div class="col-md-6">
-              <label for="endTime" class="form-label">End Date</label>
-              <input id="endTime" class="form-control" type="datetime-local" formControlName="endTime">
+              <label for="addEndTime" class="form-label">End Date</label>
+              <input id="addEndTime" class="form-control" type="datetime-local" formControlName="endTime">
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editWorkLogModal" tabindex="-1" aria-labelledby="editWorkLogLongTitle" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editWorkLogLongTitle">Edit Work Log</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="workLogEditForm" (ngSubmit)="editWorkLog()">
+          <div class="mb-3 form-group">
+            <div class="col-md-6">
+              <label for="addStartTime" class="form-label">Start Date</label>
+              <input id="editStartTime" class="form-control" type="datetime-local" formControlName="startTime">
+            </div>
+            <div class="col-md-6">
+              <label for="editEndTime" class="form-label">End Date</label>
+              <input id="editEndTime" class="form-control" type="datetime-local" formControlName="endTime">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
           </div>
         </form>
       </div>
