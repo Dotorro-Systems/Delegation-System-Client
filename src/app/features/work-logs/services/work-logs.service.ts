@@ -8,7 +8,7 @@ export class WorkLogsService {
 
   constructor() { }
 
-  parseNote(data: any): WorkLog {
+  parseWorkLog(data: any): WorkLog {
     return {
       ...data,
       startTime: new Date(data['startTime']),

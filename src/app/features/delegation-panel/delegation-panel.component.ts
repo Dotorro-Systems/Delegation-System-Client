@@ -173,7 +173,7 @@ export class DelegationPanelComponent implements OnInit {
       .subscribe({
         next: (data) => {
           ToastComponent.showToast("Success!", "Work Log has been added successfully!");
-          this.delegation.workLogs.push(this.workLogService.parseNote(data));
+          this.delegation.workLogs.push(this.workLogService.parseWorkLog(data));
         },
         error: (err) => {
           ToastComponent.showToast("Fail!", `${err.error}`);
@@ -192,10 +192,10 @@ export class DelegationPanelComponent implements OnInit {
       .put<WorkLog>(`workLogs/${this.selectedWorkLogId}`, body)
       .subscribe({
         next: (data) => {
-          ToastComponent.showToast("Success!", "Work Log has been editted successfully!");
-          const index = this.delegation.workLogs.findIndex(workLog => workLog.id === data.id);
+          ToastComponent.showToast("Success!", "Work Log has been edited successfully!");
+          const index = this.delegation.workLogs.findIndex(workLog => workLog.id === this.selectedWorkLogId);
           if (index !== -1) {
-            this.delegation.workLogs[index] = this.workLogService.parseNote(data);
+            this.delegation.workLogs[index] = this.workLogService.parseWorkLog(data);
           }
         },
         error: (err) => {

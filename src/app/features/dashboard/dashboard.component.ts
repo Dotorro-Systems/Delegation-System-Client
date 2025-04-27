@@ -78,40 +78,32 @@ export class DashboardComponent implements OnInit {
   createDelegation(): void {
     let body = {
       ...this.delegationForm.value,
-      status: 'Planned',
+      departmentId: this.user.department.id
     };
 
     this.apiService
       .post<Delegation>(`delegations/create`, body)
         .subscribe({
           next: (data) => {
-            this.apiService.post<{}>(`delegations/add-department`, { departmentId: this.user.department.id, delegationId: data.id })
-              .subscribe({
-                next: () => {
-                  let newDelegation = this.delegationsService.parseDelegation(data);
+            let newDelegation = this.delegationsService.parseDelegation(data);
 
-                  if (this.delegationForm.value['addSelf'])
-                  {
-                    this.apiService.post<{}>(`delegations/add-user`, { delegationId: data.id, userId: this.user.id })
-                      .subscribe({
-                        next: () => {
+            if (this.delegationForm.value['addSelf'])
+            {
+              this.apiService.post<{}>(`delegations/add-user`, { delegationId: data.id, userId: this.user.id })
+                .subscribe({
+                  next: () => {
 
-                        },
-                        error: (err) => {
-                          ToastComponent.showToast("Fail!", `${err.error}`);
-                        }
-                      })
-
-                    newDelegation.users.push(this.user);
+                  },
+                  error: (err) => {
+                    ToastComponent.showToast("Fail!", `${err.error}`);
                   }
+                })
 
-                  ToastComponent.showToast("Success!", "Delegation has been created successfully!");
-                  this.delegations.push(newDelegation);
-                },
-                error: (err) => {
-                  ToastComponent.showToast("Fail!", `${err.error}`);
-                }
-              })
+              newDelegation.users.push(this.user);
+            }
+
+            ToastComponent.showToast("Success!", "Delegation has been created successfully!");
+            this.delegations.push(newDelegation);
           },
           error: (err) => {
             ToastComponent.showToast("Fail!", `${err.error}`);
