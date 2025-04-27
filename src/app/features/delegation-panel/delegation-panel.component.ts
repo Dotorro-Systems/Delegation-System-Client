@@ -12,6 +12,7 @@ import {Expense} from '../../../interfaces/expense';
 import {DelegationsService} from '../delegations/services/delegations.service';
 import {NotesService} from '../notes/services/notes.service';
 import {ExpensesService} from '../expenses/services/expenses.service';
+import {WorkLogsService} from '../work-logs/services/work-logs.service';
 
 @Component({
   selector: 'app-delegations',
@@ -36,6 +37,7 @@ export class DelegationPanelComponent implements OnInit {
   noteForm: FormGroup;
   expenseForm: FormGroup;
   usersForm!: FormGroup;
+  workLogForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -44,11 +46,17 @@ export class DelegationPanelComponent implements OnInit {
     private delegationsService: DelegationsService,
     private notesService: NotesService,
     private expensesService: ExpensesService,
+    private workLogService: WorkLogsService,
     ) {
 
     this.noteForm = this.formBuilder.group({
       content: [''],
     });
+
+    this.workLogForm = this.formBuilder.group({
+      startTime: [],
+      endTime: [],
+    })
 
     this.expenseForm = this.formBuilder.group({
       description: [''],
@@ -139,6 +147,28 @@ export class DelegationPanelComponent implements OnInit {
           ToastComponent.showToast("Fail!", `${err.error}`);
         }
         });
+  }
+
+  submitWorkLog(): void {
+    console.log("startTime:", this.workLogForm.value.startTime);
+    console.log("endTime:", this.workLogForm.value.endTime);
+    let body = {
+      ...this.workLogForm.value,
+      delegationId: this.delegationId,
+      userId: this.user.id,
+    }
+
+    this.apiService
+      .post<Note>(`workLogs/create`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Work Log has been added successfully!");
+          this.delegation.workLogs.push(this.workLogService.parseNote(data));
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+      });
   }
 
   getTotalDelegationCost(): number {

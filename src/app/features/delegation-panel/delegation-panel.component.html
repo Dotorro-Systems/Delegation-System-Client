@@ -44,7 +44,7 @@
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let note of delegation.notes">
             <h5 class="m-0">{{ note.user.firstName }} {{ note.user.lastName }}</h5>
-            <i type="button" class="bi bi-trash3-fill float-end" (click)="deleteNote(note.id)" *ngIf="note.user.id == user.id"></i>
+            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-trash3-fill float-end" (click)="deleteNote(note.id)" ></i>
             <small class="text-secondary">{{ note.createdAt | date:'mediumDate' }}</small>
             <p class="mb-0">{{ note.content }}</p>
           </li>
@@ -75,11 +75,12 @@
             <td>${{ expense.amount }}</td>
             <td>
               <div class="dropdown">
-                <button type="button" class="btn py-0" data-bs-toggle="dropdown" aria-expanded="false"><h5 class="m-0"><i class="bi bi-list"></i></h5></button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <button class="btn py-0" type="button" id="workLogDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <h5 class="m-0"><i class="bi bi-list"></i></h5>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="workLogDropdown">
+                  <li><a class="dropdown-item" href="#">Edit</a></li>
+                  <li><a class="dropdown-item" href="#">Delete</a></li>
                 </ul>
               </div>
             </td>
@@ -97,7 +98,10 @@
 
       <!-- Work Logs Section -->
       <div class="mb-4">
-        <h5>Work Logs</h5>
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <h5 class="m-0">Work Logs</h5>
+          <i *ngIf="user && user.role != 'EMPLOYEE'" type="button" class="bi bi-plus-square" style="color: mediumpurple;" data-bs-toggle="modal" data-bs-target="#addWorkLogModal"></i>
+        </div>
         <table class="table table-striped">
           <thead>
           <tr>
@@ -105,7 +109,7 @@
             <th scope="col">Name</th>
             <th scope="col">Date</th>
             <th scope="col">Duration</th>
-            <th scope="col">Breaks</th>
+            <th scope="col">Action</th>
           </tr>
           </thead>
           <tbody>
@@ -113,11 +117,18 @@
             <th scope="row">{{ workLog.id }}</th>
             <td> {{ workLog.user.firstName }} {{ workLog.user.lastName }}</td>
             <td> {{ workLog.startTime | date}}</td>
-            <td> {{ workLog.startTime | date: 'HH:mm' }} - {{ workLog.startTime | date: 'HH:mm' }}</td>
+            <td> {{ workLog.startTime | date: 'HH:mm' }} - {{ workLog.endTime | date: 'HH:mm' }}</td>
             <td>
-              <p *ngFor="let workLogBreak of workLog.workLogBreaks">
-                {{ workLogBreak.startTime | date: 'HH:mm' }} - {{ workLogBreak.endTime | date: 'HH:mm' }}
-              </p>
+              <div class="dropdown">
+                <button class="btn py-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <h5 class="m-0"><i class="bi bi-list"></i></h5>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </div>
             </td>
           </tr>
           </tbody>
@@ -191,6 +202,35 @@
             <div class="form-check" *ngFor="let user of usersInMyDepartment">
               <label class="form-check-label" for="{{ user.id }}">{{ user.firstName }} {{ user.lastName }}</label>
               <input type="checkbox" class="form-check-input" id="{{ user.id }}" formControlName="{{ user.id }}" value="{{ user.id }}">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addWorkLogModal" tabindex="-1" aria-labelledby="addWorkLogLongTitle" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addWorkLogLongTitle">Add note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="workLogForm" (ngSubmit)="submitWorkLog()">
+          <div class="mb-3 form-group">
+            <div class="col-md-6">
+              <label for="startTime" class="form-label">Start Date</label>
+              <input id="startTime" class="form-control" type="datetime-local" formControlName="startTime">
+            </div>
+            <div class="col-md-6">
+              <label for="endTime" class="form-label">End Date</label>
+              <input id="endTime" class="form-control" type="datetime-local" formControlName="endTime">
             </div>
           </div>
           <div class="modal-footer">
