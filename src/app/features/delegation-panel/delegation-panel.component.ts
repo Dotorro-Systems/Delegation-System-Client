@@ -119,13 +119,15 @@ export class DelegationPanelComponent implements OnInit {
     this.selectedWorkLogId = workLogId;
 
     const selectedWorkLog = this.delegation.workLogs.find(log => log.id === workLogId);
+    // @ts-ignore
+    const startTimeIsoDateString = new Date(selectedWorkLog?.startTime - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    // @ts-ignore
+    const endTimeIsoDateString = new Date(selectedWorkLog?.endTime - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
     if (selectedWorkLog) {
-      setTimeout(() => {
-        this.workLogEditForm.patchValue({
-          startTime: selectedWorkLog.startTime,
-          endTime: selectedWorkLog.endTime
-        });
-      }, 0);
+      this.workLogEditForm.patchValue({
+        startTime: startTimeIsoDateString,
+        endTime: endTimeIsoDateString
+      });
     }
   }
 
