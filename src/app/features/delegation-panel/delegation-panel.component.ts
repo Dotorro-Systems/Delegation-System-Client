@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute} from '@angular/router';
@@ -28,7 +28,7 @@ import {WorkLogsService} from '../work-logs/services/work-logs.service';
   templateUrl: './delegation-panel.component.html',
   styleUrl: './delegation-panel.component.css'
 })
-export class DelegationPanelComponent implements OnInit {
+export class DelegationPanelComponent {
   @ViewChild('carouselInner', { static: false }) carouselInner!: ElementRef;
   delegationId!: number;
   delegation!: Delegation;
@@ -56,9 +56,13 @@ export class DelegationPanelComponent implements OnInit {
       content: [''],
     });
 
+    let now = new Date();
+    let hourPastNow = new Date();
+    hourPastNow.setHours(hourPastNow.getHours() + 1);
+
     this.workLogForm = this.formBuilder.group({
-      startTime: [],
-      endTime: [],
+      startTime: new FormControl(now.toISOString().slice(0, 16)),
+      endTime: new FormControl(hourPastNow.toISOString().slice(0, 16)),
     })
 
     this.workLogEditForm = this.formBuilder.group({
@@ -75,6 +79,13 @@ export class DelegationPanelComponent implements OnInit {
       const id = params.get('id');
       this.delegationId = id ? +id : NaN;
     });
+
+    this.apiService.getMe()
+      .subscribe({
+        next: (data) => {
+          this.user = data;
+        }
+      });
 
     this.apiService.get<Delegation>(`delegations/${this.delegationId}`)
       .subscribe({
@@ -103,15 +114,6 @@ export class DelegationPanelComponent implements OnInit {
           ToastComponent.showToast("Fail", error.err)
         }
       });
-  }
-
-  ngOnInit() {
-    this.apiService.getMe()
-      .subscribe({
-        next: (data) => {
-          this.user = data;
-        }
-    });
   }
 
   selectWorkLogForEdit(workLogId: number) {
