@@ -62,8 +62,8 @@ export class DelegationPanelComponent implements OnInit {
     })
 
     this.workLogEditForm = this.formBuilder.group({
-      startTime: [],
-      endTime: [],
+      startTime: ['2025-04-28T08:00'],
+      endTime: ['2025-04-28T17:00'],
     })
 
     this.expenseForm = this.formBuilder.group({
@@ -114,8 +114,14 @@ export class DelegationPanelComponent implements OnInit {
     });
   }
 
-  selectWorkLogForEdit(id: number): void {
-    this.selectedWorkLogId = id;
+  selectWorkLogForEdit(workLogId: number) {
+    const selectedWorkLog = this.delegation.workLogs.find(log => log.id === workLogId);
+    if (selectedWorkLog) {
+      this.workLogEditForm.patchValue({
+        startTime: selectedWorkLog.startTime,
+        endTime: selectedWorkLog.endTime
+      });
+    }
   }
 
   submitExpense(): void {
