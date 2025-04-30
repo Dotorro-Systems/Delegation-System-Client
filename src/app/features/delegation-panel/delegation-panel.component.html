@@ -79,9 +79,8 @@
                   <h5 class="m-0"><i class="bi bi-list"></i></h5>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="workLogDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editExpenseModal" (click)="selectExpenseForEdit(expense.id)">Edit</a></li>
+                  <li><a class="dropdown-item" (click)="deleteExpense(expense.id)">Delete</a></li>
                 </ul>
               </div>
             </td>
@@ -150,7 +149,7 @@
         <form [formGroup]="expenseForm" (ngSubmit)="submitExpense()">
           <div class="form-group">
             <label class="py-2" for="amount">Amount</label>
-            <input class="form-control" id="amount" placeholder="Enter amount" formControlName="amount">
+            <input class="form-control" id="addAmount" placeholder="Enter amount" formControlName="amount">
           </div>
           <div class="form-group mb-3">
             <label class="py-2 form-label" for="inputExpense">Description</label>
@@ -261,6 +260,33 @@
               <label for="editEndTime" class="form-label">End Date</label>
               <input id="editEndTime" class="form-control" type="datetime-local" formControlName="endTime">
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseTitle" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editExpenseTitle">Edit Expense</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="expenseEditForm" (ngSubmit)="editExpense()">
+          <div class="form-group">
+            <label class="py-2" for="amount">Amount</label>
+            <input class="form-control" id="amount" placeholder="Enter amount" formControlName="amount">
+          </div>
+          <div class="form-group mb-3">
+            <label class="py-2 form-label" for="editInputExpense">Description</label>
+            <textarea class="form-control" id="editInputExpense" placeholder="Enter description" formControlName="description"></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

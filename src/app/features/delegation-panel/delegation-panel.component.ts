@@ -35,9 +35,11 @@ export class DelegationPanelComponent implements OnInit {
   user!: User;
   usersInMyDepartment!: User[];
   selectedWorkLogId!: number;
+  selectedExpenseId!: number;
 
   noteForm: FormGroup;
   expenseForm: FormGroup;
+  expenseEditForm: FormGroup;
   usersForm!: FormGroup;
   workLogForm: FormGroup;
   workLogEditForm: FormGroup;
@@ -67,6 +69,11 @@ export class DelegationPanelComponent implements OnInit {
     })
 
     this.expenseForm = this.formBuilder.group({
+      description: [''],
+      amount: []
+    });
+
+    this.expenseEditForm = this.formBuilder.group({
       description: [''],
       amount: []
     });
@@ -119,13 +126,29 @@ export class DelegationPanelComponent implements OnInit {
     this.selectedWorkLogId = workLogId;
 
     const selectedWorkLog = this.delegation.workLogs.find(log => log.id === workLogId);
+    // @ts-ignore
+    const startTimeIsoDateString = new Date(selectedWorkLog?.startTime - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    // @ts-ignore
+    const endTimeIsoDateString = new Date(selectedWorkLog?.endTime - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
     if (selectedWorkLog) {
-      setTimeout(() => {
-        this.workLogEditForm.patchValue({
-          startTime: selectedWorkLog.startTime,
-          endTime: selectedWorkLog.endTime
-        });
-      }, 0);
+      this.workLogEditForm.patchValue({
+        startTime: startTimeIsoDateString,
+        endTime: endTimeIsoDateString
+      });
+    }
+  }
+
+  selectExpenseForEdit(expenseId: number) {
+    this.expenseEditForm.reset();
+    this.selectedExpenseId = expenseId;
+
+    const selectedExpense = this.delegation.expenses.find(log => log.id === expenseId);
+    // @ts-ignore
+    if (selectedExpense) {
+      this.expenseEditForm.patchValue({
+        description: selectedExpense.description,
+        amount: selectedExpense.amount
+      });
     }
   }
 
@@ -215,6 +238,32 @@ export class DelegationPanelComponent implements OnInit {
       });
   }
 
+  editExpense() {
+    const originalExpense = this.delegation.expenses.find(e => e.id === this.selectedExpenseId);
+
+    let body = {
+      ...this.expenseEditForm.value,
+      delegationId: this.delegationId,
+      userId: this.user.id,
+      createdAt: originalExpense?.createdAt
+    };
+
+    this.apiService
+      .put<Expense>(`expenses/${this.selectedExpenseId}`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Expense has been edited successfully!");
+          const index = this.delegation.expenses.findIndex(expense => expense.id === this.selectedExpenseId);
+          if (index !== -1) {
+            this.delegation.expenses[index] = this.expensesService.parseExpense(data);
+          }
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+      });
+  }
+
   getTotalDelegationCost(): number {
     return this.delegation.expenses
       .reduce(function (a, b) {
@@ -267,6 +316,15 @@ export class DelegationPanelComponent implements OnInit {
       .subscribe({
         next: () => {
           this.delegation.workLogs = this.delegation.workLogs.filter(workLog => workLog.id !== id);
+        }
+      });
+  }
+
+  deleteExpense(id: number) {
+    this.apiService.delete<{}>(`expenses/${id}`, )
+      .subscribe({
+        next: () => {
+          this.delegation.expenses = this.delegation.expenses.filter(expense => expense.id !== id);
         }
       });
   }
