@@ -44,7 +44,8 @@
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let note of delegation.notes">
             <h5 class="m-0">{{ note.user.firstName }} {{ note.user.lastName }}</h5>
-            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-trash3-fill float-end" (click)="deleteNote(note.id)" ></i>
+            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-trash3-fill float-end  ms-4" (click)="deleteNote(note.id)" ></i>
+            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-pencil-fill float-end" data-bs-toggle="modal" data-bs-target="#editNoteModal" (click)="selectNoteForEdit(note.id)" ></i>
             <small class="text-secondary">{{ note.createdAt | date:'mediumDate' }}</small>
             <p class="mb-0">{{ note.content }}</p>
           </li>
@@ -287,6 +288,29 @@
           <div class="form-group mb-3">
             <label class="py-2 form-label" for="editInputExpense">Description</label>
             <textarea class="form-control" id="editInputExpense" placeholder="Enter description" formControlName="description"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteTitle" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editNoteTitle">Edit Note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="noteEditForm" (ngSubmit)="editNote()">
+          <div class="mb-3 form-group">
+            <label for="editInputNote" class="form-label">Note Content:</label>
+            <textarea class="form-control" id="editInputNote" placeholder="Enter note" formControlName="content"></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

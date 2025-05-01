@@ -36,8 +36,10 @@ export class DelegationPanelComponent implements OnInit {
   usersInMyDepartment!: User[];
   selectedWorkLogId!: number;
   selectedExpenseId!: number;
+  selectedNoteId!: number;
 
   noteForm: FormGroup;
+  noteEditForm: FormGroup;
   expenseForm: FormGroup;
   expenseEditForm: FormGroup;
   usersForm!: FormGroup;
@@ -77,6 +79,10 @@ export class DelegationPanelComponent implements OnInit {
       description: [''],
       amount: []
     });
+
+    this.noteEditForm = this.formBuilder.group({
+      content: [''],
+    })
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -148,6 +154,19 @@ export class DelegationPanelComponent implements OnInit {
       this.expenseEditForm.patchValue({
         description: selectedExpense.description,
         amount: selectedExpense.amount
+      });
+    }
+  }
+
+  selectNoteForEdit(noteId: number) {
+    this.noteEditForm.reset();
+    this.selectedNoteId = noteId;
+
+    const selectedNote = this.delegation.notes.find(log => log.id === noteId);
+    // @ts-ignore
+    if (selectedNote) {
+      this.noteEditForm.patchValue({
+        content: selectedNote.content,
       });
     }
   }
@@ -256,6 +275,32 @@ export class DelegationPanelComponent implements OnInit {
           const index = this.delegation.expenses.findIndex(expense => expense.id === this.selectedExpenseId);
           if (index !== -1) {
             this.delegation.expenses[index] = this.expensesService.parseExpense(data);
+          }
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
+        }
+      });
+  }
+
+  editNote() {
+    const originalNote = this.delegation.notes.find(e => e.id === this.selectedNoteId);
+
+    let body = {
+      ...this.noteEditForm.value,
+      delegationId: this.delegationId,
+      userId: this.user.id,
+      createdAt: originalNote?.createdAt
+    };
+
+    this.apiService
+      .put<Expense>(`notes/${this.selectedNoteId}`, body)
+      .subscribe({
+        next: (data) => {
+          ToastComponent.showToast("Success!", "Note has been edited successfully!");
+          const index = this.delegation.notes.findIndex(note => note.id === this.selectedNoteId);
+          if (index !== -1) {
+            this.delegation.notes[index] = this.notesService.parseNote(data);
           }
         },
         error: (err) => {
