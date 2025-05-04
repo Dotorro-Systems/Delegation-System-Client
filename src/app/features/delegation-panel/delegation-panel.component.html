@@ -11,7 +11,8 @@
           </div>
           <div>{{ delegation.startDate | date:'mediumDate' }} - {{ delegation.endDate | date:'mediumDate' }}</div>
         </div>
-        <div class="col-md-6 d-flex align-items-center justify-content-end">
+        <div class="col-md-6 d-flex flex-column align-items-end justify-content-center">
+          <i *ngIf="user && user.role != 'EMPLOYEE' && delegationForm" type="button" class="bi bi-pencil-fill float-end" data-bs-toggle="modal" data-bs-target="#editDelegationModal"></i>
           <span>{{ delegation.origin }} <i class="bi bi-arrow-right"></i> {{ delegation.destination }}</span>
         </div>
       </div>
@@ -45,7 +46,7 @@
           <li class="list-group-item" *ngFor="let note of delegation.notes">
             <h5 class="m-0">{{ note.user.firstName }} {{ note.user.lastName }}</h5>
             <i *ngIf="note.user.id == user.id" type="button" class="bi bi-trash3-fill float-end  ms-4" (click)="deleteNote(note.id)" ></i>
-            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-pencil-fill float-end" data-bs-toggle="modal" data-bs-target="#editNoteModal" (click)="selectNoteForEdit(note.id)" ></i>
+            <i *ngIf="note.user.id == user.id" type="button" class="bi bi-pencil-fill float-end" data-bs-toggle="modal" data-bs-target="#editNoteModal" (click)="selectNoteForEdit(note.id)"></i>
             <small class="text-secondary">{{ note.createdAt | date:'mediumDate' }}</small>
             <p class="mb-0">{{ note.content }}</p>
           </li>
@@ -318,6 +319,47 @@
           </div>
         </form>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editDelegationModal" tabindex="-1" aria-labelledby="editDelegationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editDelegationModalLabel">Edit Delegation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form *ngIf="delegationForm" (ngSubmit)="editDelegation()" [formGroup]="delegationForm">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" aria-describedby="titleHelp" formControlName="title">
+            </div>
+            <div class="col-md-6">
+              <label for="origin" class="form-label">Origin</label>
+              <input type="text" class="form-control" id="origin" formControlName="origin">
+            </div>
+            <div class="col-md-6">
+              <label for="destination" class="form-label">Destination</label>
+              <input type="text" class="form-control" id="destination" formControlName="destination">
+            </div>
+            <div class="col-md-6">
+              <label for="startDate" class="form-label">Start Date</label>
+              <input id="startDate" class="form-control" type="datetime-local" formControlName="startDate">
+            </div>
+            <div class="col-md-6">
+              <label for="endDate" class="form-label">End Date</label>
+              <input id="endDate" class="form-control" type="datetime-local" formControlName="endDate">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

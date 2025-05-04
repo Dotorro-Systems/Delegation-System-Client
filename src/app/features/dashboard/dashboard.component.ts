@@ -38,17 +38,16 @@ export class DashboardComponent implements OnInit {
               private formBuilder: FormBuilder,
               private delegationsService: DelegationsService,
   ) {
-    const tomorrow: Date = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const nextMonth = new Date();
-    nextMonth.setMonth(tomorrow.getMonth() + 1);
+    const today: Date = new Date();
+    const inAWeek = new Date();
+    inAWeek.setDate(inAWeek.getDay() + 1);
 
     this.delegationForm = this.formBuilder.group({
       title: ['Example Title'],
       origin: ['Origin'],
       destination: ['Destination'],
-      startDate: new FormControl(tomorrow.toISOString().slice(0, 16)),
-      endDate: new FormControl(nextMonth.toISOString().slice(0, 16)),
+      startDate: new FormControl(today.toISOString().slice(0, 16)),
+      endDate: new FormControl(inAWeek.toISOString().slice(0, 16)),
       addSelf: false,
     });
   }

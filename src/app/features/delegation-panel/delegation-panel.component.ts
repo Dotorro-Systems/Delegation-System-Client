@@ -45,6 +45,7 @@ export class DelegationPanelComponent {
   usersForm!: FormGroup;
   workLogForm: FormGroup;
   workLogEditForm: FormGroup;
+  delegationForm!: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -105,6 +106,14 @@ export class DelegationPanelComponent {
         next: (data: Delegation) => {
           this.delegation = this.delegationsService.parseDelegation(data);
 
+          this.delegationForm = this.formBuilder.group({
+            title: this.delegation.title,
+            origin: this.delegation.origin,
+            destination: this.delegation.destination,
+            startDate: new FormControl(this.delegation.startDate.toISOString().slice(0, 16)),
+            endDate: new FormControl(this.delegation.endDate.toISOString().slice(0, 16)),
+          });
+
           this.apiService.get<User[]>(`users/in-my-department`)
             .subscribe({
               next: (data: User[]) => {
@@ -151,7 +160,6 @@ export class DelegationPanelComponent {
     this.selectedExpenseId = expenseId;
 
     const selectedExpense = this.delegation.expenses.find(log => log.id === expenseId);
-    // @ts-ignore
     if (selectedExpense) {
       this.expenseEditForm.patchValue({
         description: selectedExpense.description,
@@ -165,7 +173,6 @@ export class DelegationPanelComponent {
     this.selectedNoteId = noteId;
 
     const selectedNote = this.delegation.notes.find(log => log.id === noteId);
-    // @ts-ignore
     if (selectedNote) {
       this.noteEditForm.patchValue({
         content: selectedNote.content,
@@ -372,6 +379,19 @@ export class DelegationPanelComponent {
       .subscribe({
         next: () => {
           this.delegation.expenses = this.delegation.expenses.filter(expense => expense.id !== id);
+        }
+      });
+  }
+
+  editDelegation() {
+    const body = {
+      ...this.delegationForm.value,
+      departmentId: this.delegation.department.id
+    }
+    this.apiService.put<Delegation>(`delegations/${this.delegation.id}`, body)
+      .subscribe({
+        next: (data: Delegation) => {
+          this.delegation = this.delegationsService.parseDelegation(data);
         }
       });
   }
