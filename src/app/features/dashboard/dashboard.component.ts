@@ -74,6 +74,10 @@ export class DashboardComponent implements OnInit {
       })
   }
 
+  getFilteredDelegationsByStatus(status: string): Delegation[] {
+    return this.delegations.filter(d => d.status === status);
+  }
+
   createDelegation(): void {
     let body = {
       ...this.delegationForm.value,

@@ -4,14 +4,35 @@
 
 <div class="row m-0 p-5 pt-3 dashboard">
   <div class="col-lg-2 ps-0">
-    <h3>My Delegations</h3>
+    <h3>Delegations</h3>
     <div *ngIf="loading">Loading...</div>
 
-    <ul class="nav flex-column" *ngIf="delegations.length">
-      <li class="nav-item" *ngFor="let delegation of delegations">
-        <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
-      </li>
-    </ul>
+    <div *ngIf="getFilteredDelegationsByStatus('Active').length">
+      <h4 class="m-0">Active</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Active')">
+          <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
+        </li>
+      </ul>
+    </div>
+    <br>
+    <div *ngIf="getFilteredDelegationsByStatus('Planned').length">
+      <h4 class="m-0">Planned</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Planned')">
+          <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
+        </li>
+      </ul>
+    </div>
+    <br>
+    <div *ngIf="getFilteredDelegationsByStatus('Finished').length">
+      <h4 class="m-0">Finished</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Finished')">
+          <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
+        </li>
+      </ul>
+    </div>
   </div>
   <div class="col-lg-10" *ngIf="selectedDelegation">
     <div class="row">
