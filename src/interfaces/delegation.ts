@@ -3,6 +3,7 @@ import {WorkLog} from './work-log';
 import {User} from './user';
 import {Note} from './note';
 import {Department} from './department';
+import {Stage} from './stage';
 
 export interface Delegation {
   id: number;
@@ -17,4 +18,5 @@ export interface Delegation {
   users: User[];
   expenses: Expense[];
   workLogs: WorkLog[];
+  stages: Stage[];
 }

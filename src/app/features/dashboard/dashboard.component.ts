@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
   ) {
     const today: Date = new Date();
     const inAWeek = new Date();
-    inAWeek.setDate(inAWeek.getDay() + 1);
+    inAWeek.setDate(inAWeek.getDate() + 7);
 
     this.delegationForm = this.formBuilder.group({
       title: ['Example Title'],

@@ -14,6 +14,8 @@ import {DelegationsService} from '../delegations/services/delegations.service';
 import {NotesService} from '../notes/services/notes.service';
 import {ExpensesService} from '../expenses/services/expenses.service';
 import {WorkLogsService} from '../work-logs/services/work-logs.service';
+import {Stage} from '../../../interfaces/stage';
+import {StagesService} from '../stages/services/stages.service';
 
 @Component({
   selector: 'app-delegations',
@@ -37,6 +39,7 @@ export class DelegationPanelComponent {
   selectedWorkLogId!: number;
   selectedExpenseId!: number;
   selectedNoteId!: number;
+  selectedStageId!: number;
 
   noteForm: FormGroup;
   noteEditForm: FormGroup;
@@ -46,6 +49,7 @@ export class DelegationPanelComponent {
   workLogForm: FormGroup;
   workLogEditForm: FormGroup;
   delegationForm!: FormGroup;
+  stagesForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -55,6 +59,7 @@ export class DelegationPanelComponent {
     private notesService: NotesService,
     private expensesService: ExpensesService,
     private workLogService: WorkLogsService,
+    private stagesService: StagesService,
     ) {
 
     this.noteForm = this.formBuilder.group({
@@ -68,6 +73,13 @@ export class DelegationPanelComponent {
     this.workLogForm = this.formBuilder.group({
       startTime: new FormControl(now.toISOString().slice(0, 16)),
       endTime: new FormControl(hourPastNow.toISOString().slice(0, 16)),
+    })
+
+    this.stagesForm = this.formBuilder.group({
+      type: ['Departure'],
+      place: [''],
+      description: [''],
+      time: new FormControl(now.toISOString().slice(0, 16)),
     })
 
     this.workLogEditForm = this.formBuilder.group({
@@ -136,6 +148,10 @@ export class DelegationPanelComponent {
           ToastComponent.showToast("Fail", error.err)
         }
       });
+  }
+
+  getSortedStage(): Stage[] {
+    return this.delegation.stages.sort((a, b) => a.time.getTime() - b.time.getTime());
   }
 
   selectWorkLogForEdit(workLogId: number) {
@@ -388,10 +404,69 @@ export class DelegationPanelComponent {
       ...this.delegationForm.value,
       departmentId: this.delegation.department.id
     }
+
     this.apiService.put<Delegation>(`delegations/${this.delegation.id}`, body)
       .subscribe({
         next: (data: Delegation) => {
           this.delegation = this.delegationsService.parseDelegation(data);
+        }
+      });
+  }
+
+  addStage() {
+    const body = {
+      ...this.stagesForm.value,
+      delegationId: this.delegation.id,
+    }
+
+    this.apiService.post<Stage>(`stages/create`, body)
+      .subscribe({
+        next: (data: Stage) => {
+          this.delegation.stages.push(this.stagesService.parseStage(data));
+        }
+      });
+  }
+
+  deleteStage(id: number) {
+    this.apiService.delete<{}>(`stages/${id}`)
+      .subscribe({
+        next: () => {
+          this.delegation.stages = this.delegation.stages.filter(stage => stage.id !== id);
+        }
+      });
+  }
+
+  selectStageForEdit(id: number) {
+    this.selectedStageId = id;
+
+    const stage = this.delegation.stages.filter(stage => stage.id === id)[0];
+
+    // @ts-ignore
+    const timeIsoDateString = new Date(stage?.time - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+
+    this.stagesForm.patchValue({
+      ...stage,
+      time: timeIsoDateString
+    })
+  }
+
+  editStage() {
+    const body = {
+      ...this.stagesForm.value,
+      delegationId: this.delegation.id
+    }
+
+    this.apiService.put<Stage>(`stages/${this.selectedStageId}`, body)
+      .subscribe({
+        next: (data: Stage) => {
+          ToastComponent.showToast("Success!", "Stage has been edited successfully!");
+          const index = this.delegation.stages.findIndex(stage => stage.id === this.selectedStageId);
+          if (index !== -1) {
+            this.delegation.stages[index] = this.stagesService.parseStage(data);
+          }
+        },
+        error: (err) => {
+          ToastComponent.showToast("Fail!", `${err.error}`);
         }
       });
   }
