@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Delegation} from '../../../interfaces/delegation';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {UsersModule} from '../users/users.module';
 import {User} from '../../../interfaces/user';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,8 @@ import {FeaturesModule} from '../features.module';
     NgbNavModule,
     NgbNavModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SlicePipe
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit {
   selectedDelegation!: Delegation;
   loading: boolean = true;
   error: string = '';
+  limitedDelegationCount: number = 3;
 
   constructor(private apiService: ApiService,
               private formBuilder: FormBuilder,

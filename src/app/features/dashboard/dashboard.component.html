@@ -10,7 +10,7 @@
     <div *ngIf="getFilteredDelegationsByStatus('Active').length">
       <h4 class="m-0">Active</h4>
       <ul class="nav flex-column">
-        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Active')">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Active') | slice:0:limitedDelegationCount">
           <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
         </li>
       </ul>
@@ -19,7 +19,7 @@
     <div *ngIf="getFilteredDelegationsByStatus('Planned').length">
       <h4 class="m-0">Planned</h4>
       <ul class="nav flex-column">
-        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Planned')">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Planned') | slice:0:limitedDelegationCount" >
           <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
         </li>
       </ul>
@@ -28,7 +28,7 @@
     <div *ngIf="getFilteredDelegationsByStatus('Finished').length">
       <h4 class="m-0">Finished</h4>
       <ul class="nav flex-column">
-        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Finished')">
+        <li class="nav-item" *ngFor="let delegation of getFilteredDelegationsByStatus('Finished') | slice:0:limitedDelegationCount">
           <a class="nav-link ps-0" aria-current="page" (click)="selectedDelegation = delegation">{{ delegation.title }}</a>
         </li>
       </ul>
