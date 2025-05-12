@@ -21,7 +21,7 @@ export class DelegationReportComponent {
       this.delegationId = id ? +id : NaN;
     });
 
-    this.apiService.get<{}>(`reports/${this.delegationId}`)
+    this.apiService.get<{}>(`reports/delegation/${this.delegationId}`)
       .subscribe({
         next: (data) => {
           this.report = data;
