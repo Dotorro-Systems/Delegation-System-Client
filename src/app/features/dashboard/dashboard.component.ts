@@ -11,6 +11,8 @@ import {DelegationsService} from '../delegations/services/delegations.service';
 import {NotesService} from '../notes/services/notes.service';
 import {ExpensesService} from '../expenses/services/expenses.service';
 import {FeaturesModule} from '../features.module';
+import {Stage} from '../../../interfaces/stage';
+import {IconsService} from '../../core/services/icons.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +41,7 @@ export class DashboardComponent implements OnInit {
   constructor(private apiService: ApiService,
               private formBuilder: FormBuilder,
               private delegationsService: DelegationsService,
+              protected iconsService: IconsService,
   ) {
     const today: Date = new Date();
     const inAWeek = new Date();
@@ -65,7 +68,7 @@ export class DashboardComponent implements OnInit {
               next: (data) => {
                 this.delegations = data.map(d => this.delegationsService.parseDelegation(d));
                 this.loading = false;
-                this.selectedDelegation = this.delegations[0];
+                this.selectDefaultDelegation();
               },
               error: (error) => {
                 this.error = 'Failed to load delegations';
@@ -77,7 +80,29 @@ export class DashboardComponent implements OnInit {
   }
 
   getFilteredDelegationsByStatus(status: string): Delegation[] {
-    return this.delegations.filter(d => d.status === status);
+    return this.delegations.filter(d => d.status === status).sort((a, b) => {
+      return a.startDate > b.startDate ? 1 : -1;
+    });
+  }
+
+  selectDefaultDelegation() {
+    const activeDelegations: Delegation[] = this.getFilteredDelegationsByStatus('Active');
+    if (activeDelegations.length) {
+      this.selectedDelegation = activeDelegations[0];
+      return;
+    }
+
+    const plannedDelegations: Delegation[] = this.getFilteredDelegationsByStatus('Planned');
+    if (plannedDelegations.length) {
+      this.selectedDelegation = plannedDelegations[0];
+      return;
+    }
+
+    const finishedDelegations: Delegation[] = this.getFilteredDelegationsByStatus('Finished');
+    if (finishedDelegations.length) {
+      this.selectedDelegation = finishedDelegations[0];
+      return;
+    }
   }
 
   createDelegation(): void {
@@ -114,5 +139,9 @@ export class DashboardComponent implements OnInit {
             ToastComponent.showToast("Fail!", `${err.error}`);
           }
         });
+  }
+
+  getSortedStage(): Stage[] {
+    return this.selectedDelegation.stages.sort((a, b) => a.time.getTime() - b.time.getTime());
   }
 }

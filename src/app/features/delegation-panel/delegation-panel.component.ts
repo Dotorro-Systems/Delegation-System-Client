@@ -16,6 +16,7 @@ import {ExpensesService} from '../expenses/services/expenses.service';
 import {WorkLogsService} from '../work-logs/services/work-logs.service';
 import {Stage} from '../../../interfaces/stage';
 import {StagesService} from '../stages/services/stages.service';
+import {IconsService} from '../../core/services/icons.service';
 
 @Component({
   selector: 'app-delegations',
@@ -60,6 +61,7 @@ export class DelegationPanelComponent {
     private expensesService: ExpensesService,
     private workLogService: WorkLogsService,
     private stagesService: StagesService,
+    protected iconsService: IconsService,
     ) {
 
     this.noteForm = this.formBuilder.group({
@@ -470,4 +472,6 @@ export class DelegationPanelComponent {
         }
       });
   }
+
+  protected readonly window = window;
 }

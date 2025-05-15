@@ -1,0 +1,146 @@
+<div class="container w-75 mt-3">
+  <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#delegationModal"
+          (click)="modalType='Register'; resetDelegationFormToDefaults();">Create Delegation
+  </button>
+  <div class="w-100 container mt-3 mb-3 p-0">
+    <div class="row gx-3 gy-3">
+      <div class="col-md-6">
+        <form class="d-flex m-0" role="search">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search"
+                 (input)="searchOnChange($event.target)">
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group w-100">
+          <span class="input-group-text" id="basic-addon3">Limit</span>
+          <select class="form-select" id="display-limit" aria-label="Default select example"
+                  (change)="displayLimitSelectChanged($event.target)">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12">
+        <ngb-pagination class="d-flex justify-content-center" [collectionSize]="getPagesCount() * 10"
+                        [(page)]="lastPage" (pageChange)="refreshPage()" [maxSize]="5" [boundaryLinks]="true"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-3 w-100 mt-3 mb-3 d-flex justify-content-center">
+    <table class="table table-striped" style="table-layout: fixed; width: 100%">
+      <thead>
+      <tr>
+        <th scope="col" class="{{ isColumnActiveInSorting('sort-' + getSortingConditionByColumnName(item)) }}" *ngFor="let item of getColumnNames()">{{ item }} <i type="button" class="bi bi-caret-{{ getSortingCaret('sort-' + getSortingConditionByColumnName(item)) }}-fill" (click)="setSortingCondition('sort-' + getSortingConditionByColumnName(item))"></i></th>
+        <th scope="col" class="text-center">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (delegation of displayedDelegations; track delegation.id) {
+          <tr>
+            <th scope="row">{{ delegation.id }}</th>
+            <td><a href="delegations/{{ delegation.id }}" class="dropdown-item">{{ delegation.title }}</a></td>
+            <td>{{ delegation.status }}</td>
+            <td>{{ delegation.users.length }}</td>
+            <td>{{ delegation.origin }}</td>
+            <td>{{ delegation.destination }}</td>
+            <td>{{ delegation.startDate.toLocaleDateString() }}</td>
+            <td>{{ delegation.endDate.toLocaleDateString() }}</td>
+            <td>
+              <div class="dropdown d-flex justify-content-center">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="delegations/{{ delegation.id }}" class="dropdown-item">View</a>
+                  </li>
+                  <li *ngIf="user && user.role != 'EMPLOYEE'">
+                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delegationModal"
+                       (click)="lastInteractedDelegationId=delegation.id; fillFormWithDelegation(); modalType='Edit'; enableFormInputs();">Edit</a>
+                  </li>
+                  <li *ngIf="delegation.status === 'Finished'">
+                    <a class="dropdown-item" href="reports/{{ delegation.id }}?returnUrl=list/delegations">View PDF Report</a>
+                  </li>
+                  <li *ngIf="user && user.role != 'EMPLOYEE'">
+                    <a class="dropdown-item" (click)="lastInteractedDelegationId=delegation.id"
+                       data-bs-toggle="modal" data-bs-target="#confirmationModal">Delete</a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="confirmationModalLabel">Delete Delegation</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="deleteDelegation(lastInteractedDelegationId)"
+                  data-bs-dismiss="modal">Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="delegationModal" tabindex="-1" aria-labelledby="delegationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="delegationModalLabel">{{ modalType }} Delegation</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form *ngIf="delegationForm" (ngSubmit)="delegationModalButton()" [formGroup]="delegationForm">
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="title" aria-describedby="titleHelp" formControlName="title">
+                </div>
+                <div class="col-md-6">
+                  <label for="origin" class="form-label">Origin</label>
+                  <input type="text" class="form-control" id="origin" formControlName="origin">
+                </div>
+                <div class="col-md-6">
+                  <label for="destination" class="form-label">Destination</label>
+                  <input type="text" class="form-control" id="destination" formControlName="destination">
+                </div>
+                <div class="col-md-6">
+                  <label for="startDate" class="form-label">Start Date</label>
+                  <input id="startDate" class="form-control" type="datetime-local" formControlName="startDate">
+                </div>
+                <div class="col-md-6">
+                  <label for="endDate" class="form-label">End Date</label>
+                  <input id="endDate" class="form-control" type="datetime-local" formControlName="endDate">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" value="Close">
+              @if (modalType !== "View") {
+                <input type="submit" class="btn btn-primary" data-bs-dismiss="modal" value="{{ modalType }}">
+              } @else {
+                <input type="submit" class="btn btn-warning" value="Edit">
+              }
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

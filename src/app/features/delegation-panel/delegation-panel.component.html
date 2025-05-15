@@ -42,7 +42,7 @@
           <h5 class="m-0">Stages</h5>
           <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addStageModal"></i></h5></span>
         </div>
-        <table class="table table-striped">
+        <table class="table table-striped" style="table-layout: fixed; width: 100%">
           <thead>
           <tr>
             <th>Type</th>
@@ -54,7 +54,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let stage of getSortedStage()">
-            <td>{{ stage.type }}</td>
+            <td><i class="{{ iconsService.getIconByStageType(stage.type) }}"></i> {{ stage.type.replace('_', ' ') }}</td>
             <td>{{ stage.place }}</td>
             <td>{{ stage.description }}</td>
             <td>{{ stage.time.toLocaleString() }}</td>
@@ -97,7 +97,7 @@
           <h5 class="m-0">Expenses</h5>
           <span class="d-flex align-items-center" style="color: mediumpurple;"><h5 class="m-0"><i type="button" class="bi bi-plus-square" data-bs-toggle="modal" data-bs-target="#addExpenseModal"></i></h5></span>
         </div>
-        <table class="table table-striped">
+        <table class="table table-striped" style="table-layout: fixed; width: 100%">
           <thead>
           <tr>
             <th>Owner</th>
@@ -142,7 +142,7 @@
           <h5 class="m-0">Work Logs</h5>
           <i *ngIf="user && user.role != 'EMPLOYEE'" type="button" class="bi bi-plus-square" style="color: mediumpurple;" data-bs-toggle="modal" data-bs-target="#addWorkLogModal"></i>
         </div>
-        <table class="table table-striped">
+        <table class="table table-striped" style="table-layout: fixed; width: 100%">
           <thead>
           <tr>
             <th scope="col">Owner</th>
@@ -178,7 +178,7 @@
           <h5 class="m-0">Manager Options</h5>
         </div>
         <div>
-          <button type="button" class="btn btn-primary"><a href="reports/{{ delegation.id }}">Generate Report</a></button>
+          <button type="button" class="btn btn-primary"><a href="reports/{{ delegation.id }}?returnUrl={{ window.location.href }}">Generate Report</a></button>
         </div>
       </div>
     </div>
@@ -430,7 +430,8 @@
                 <option value="Departure">Departure</option>
                 <option value="Arrival">Arrival</option>
                 <option value="Meeting">Meeting</option>
-                <option value="Hotel">Hotel</option>
+                <option value="Check_In">Check In</option>
+                <option value="Check_Out">Check Out</option>
               </select>
             </div>
             <div class="col-md-12">
@@ -462,18 +463,19 @@
       <form [formGroup]="stagesForm" (ngSubmit)="editStage()">
         <div class="modal-body">
           <div class="row g-3">
+            <div class="col-md-6">
+              <label for="editTime" class="form-label">Time</label>
+              <input id="editTime" class="form-control" type="datetime-local" formControlName="time">
+            </div>
             <div class="col-6">
               <label for="editType" class="form-label">Type</label>
               <select class="form-select" aria-label="Default select example" id="editType" formControlName="type">
                 <option value="Departure">Departure</option>
                 <option value="Arrival">Arrival</option>
                 <option value="Meeting">Meeting</option>
-                <option value="Hotel">Hotel</option>
+                <option value="Check_In">Check In</option>
+                <option value="Check_Out">Check Out</option>
               </select>
-            </div>
-            <div class="col-md-6">
-              <label for="editTime" class="form-label">Time</label>
-              <input id="editTime" class="form-control" type="datetime-local" formControlName="time">
             </div>
             <div class="col-md-12">
               <label for="editPlace" class="form-label">Place</label>

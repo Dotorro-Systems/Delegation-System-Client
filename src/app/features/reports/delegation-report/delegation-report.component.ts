@@ -10,7 +10,7 @@ import {ApiService} from '../../../core/services/api.service';
 })
 export class DelegationReportComponent {
   delegationId!: number;
-  report!: {};
+  returnUrl!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,13 +21,25 @@ export class DelegationReportComponent {
       this.delegationId = id ? +id : NaN;
     });
 
-    this.apiService.get<{}>(`reports/delegation/${this.delegationId}`)
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+    if (returnUrl === null)
+    {
+      window.location.href = 'dashboard';
+      return;
+    }
+
+    this.returnUrl = returnUrl;
+
+    this.apiService.get<Blob>(`reports/pdf/${this.delegationId}`, { responseType: 'blob' })
       .subscribe({
         next: (data) => {
-          this.report = data;
+          const blob = new Blob([data], { type: 'application/pdf' });
+
+          const url = window.URL.createObjectURL(blob);
+          window.open(url);
+          window.location.href = this.returnUrl;
         }
       });
   }
-
-  protected readonly JSON = JSON;
 }
