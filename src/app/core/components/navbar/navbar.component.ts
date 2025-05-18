@@ -3,6 +3,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgIf} from '@angular/common';
 import {CoreModule} from '../../core.module';
 import {ApiService} from '../../services/api.service';
+import {User} from '../../../../interfaces/user';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ import {ApiService} from '../../services/api.service';
 })
 export class NavbarComponent implements OnInit{
   isAuthenticated: boolean = false;
+  user: User | undefined;
 
   constructor(private apiService: ApiService) { }
 
@@ -25,6 +27,18 @@ export class NavbarComponent implements OnInit{
       .subscribe({
         next: (response: boolean) => {
           this.isAuthenticated = response;
+
+          if (this.isAuthenticated) {
+            this.apiService.getMe()
+              .subscribe({
+                next: (response) => {
+                  this.user = response;
+                },
+                error: () => {
+
+                }
+              })
+          }
         },
         error: () => {
           this.isAuthenticated = false;

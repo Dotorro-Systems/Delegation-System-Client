@@ -1,6 +1,7 @@
 <div class="container w-75 mt-3">
   <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#delegationModal"
-          (click)="modalType='Register'; resetDelegationFormToDefaults();">Create Delegation
+          (click)="modalType='Register'; resetDelegationFormToDefaults();" *ngIf="user && user.role != 'EMPLOYEE'">
+    Create Delegation
   </button>
   <div class="w-100 container mt-3 mb-3 p-0">
     <div class="row gx-3 gy-3">

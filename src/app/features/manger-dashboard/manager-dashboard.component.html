@@ -1,0 +1,47 @@
+<div class="container w-75 mt-3">
+  <div class="row g-4">
+    <div class="col-12">
+      <h5>Reports</h5>
+      <form [formGroup]="monthlyReportForm" (submit)="generateMonthlyReport()">
+        <div class="row g-3">
+          <div class="col-12">
+            <h6 class="m-0">Monthly Report</h6>
+          </div>
+          <div class="col-md-5">
+            <div class="input-group">
+              <span class="input-group-text">Year</span>
+              <input type="number" class="form-control" formControlName="year">
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="input-group">
+              <span class="input-group-text">Month</span>
+              <input type="number" class="form-control" formControlName="month">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Generate Report</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-12">
+      <form [formGroup]="yearlyReportForm" (submit)="generateYearlyReport()">
+        <div class="row g-3">
+          <div class="col-12">
+            <h6 class="m-0">Yearly Report</h6>
+          </div>
+          <div class="col-md-10">
+            <div class="input-group">
+              <span class="input-group-text">Year</span>
+              <input type="number" class="form-control" formControlName="year">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Generate Report</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -26,6 +26,13 @@ export class LoginPageComponent {
       password: [''],
       staySignedIn: false,
     });
+
+    this.apiService.isAuthenticated()
+      .subscribe(isAuthenticated => {
+        if (isAuthenticated) {
+          window.location.href = 'dashboard';
+        }
+      })
   }
 
   login(): void {

@@ -15,13 +15,13 @@
       </ul>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="isAuthenticated">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="users/list" routerLinkActive="active">Users</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="dashboard" routerLinkActive="active">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" routerLink="list/delegations" routerLinkActive="active">All Delegations</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" routerLink="dashboard/manager" routerLinkActive="active" *ngIf="user !== undefined && user.role != 'EMPLOYEE'">Manager Dashboard</a>
         </li>
       </ul>
       <a *ngIf="isAuthenticated" class="nav-link active" aria-current="page" routerLink="logout" routerLinkActive="active">Logout</a>
