@@ -10,14 +10,18 @@ import {DelegationReportComponent} from './features/reports/delegation-report/de
 import {DelegationListComponent} from './features/delegation-list/delegation-list.component';
 import {ManagerDashboardComponent} from './features/manger-dashboard/manager-dashboard.component';
 import {ManagerGuard} from './core/guards/ManagerGuard';
+import {AdminDashboardComponent} from './features/admin-dashboard/admin-dashboard.component';
+import {DepartmentsListComponent} from './features/departments-list/departments-list.component';
 
 export const routes: Routes = [
   { path: 'users', loadChildren: () => UsersModule, canActivate: [ AuthenticationGuard ] },
   { path: '', loadChildren: () => AuthenticationModule },
   { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthenticationGuard ]},
   { path: 'dashboard/manager', component: ManagerDashboardComponent, canActivate: [ ManagerGuard ]},
+  { path: 'dashboard/admin', component: AdminDashboardComponent, canActivate: [ ManagerGuard ]},
   { path: 'delegations/:id', component: DelegationPanelComponent, canActivate: [ AuthenticationGuard ]},
   { path: 'list/delegations', component: DelegationListComponent, canActivate: [ AuthenticationGuard ]},
+  { path: 'list/departments', component: DepartmentsListComponent, canActivate: [ ManagerGuard ]},
   { path: 'reports/:id', component: DelegationReportComponent, canActivate: [ AuthenticationGuard ]},
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' },

@@ -1,0 +1,119 @@
+<div class="container w-75 mt-3">
+  <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#departmentModal"
+          (click)="modalType='Create'; resetDepartmentFormToDefaults();">
+    Create Department
+  </button>
+  <div class="w-100 container mt-3 mb-3 p-0">
+    <div class="row gx-3 gy-3">
+      <div class="col-md-6">
+        <form class="d-flex m-0" role="search">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search"
+                 (input)="searchOnChange($event.target)">
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group w-100">
+          <span class="input-group-text" id="basic-addon3">Limit</span>
+          <select class="form-select" id="display-limit" aria-label="Default select example"
+                  (change)="displayLimitSelectChanged($event.target)">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12">
+        <ngb-pagination class="d-flex justify-content-center" [collectionSize]="getPagesCount() * 10"
+                        [(page)]="lastPage" (pageChange)="refreshPage()" [maxSize]="5" [boundaryLinks]="true"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-3 w-100 mt-3 mb-3 d-flex justify-content-center">
+    <table class="table table-striped" style="table-layout: fixed; width: 100%">
+      <thead>
+      <tr>
+        <th scope="col" class="{{ isColumnActiveInSorting('sort-' + getSortingConditionByColumnName(item)) }}" *ngFor="let item of getColumnNames()">{{ item }} <i type="button" class="bi bi-caret-{{ getSortingCaret('sort-' + getSortingConditionByColumnName(item)) }}-fill" (click)="setSortingCondition('sort-' + getSortingConditionByColumnName(item))"></i></th>
+        <th scope="col" class="text-center">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (department of displayedDepartments; track department.id) {
+          <tr>
+            <th scope="row">{{ department.id }}</th>
+            <td>{{ department.name }}</td>
+            <td>
+              <div class="dropdown d-flex justify-content-center">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#departmentModal"
+                       (click)="lastInteractedDepartmentId=department.id; fillFormWithDepartment(); modalType='Edit'; enableFormInputs();">Edit</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="lastInteractedDepartmentId=department.id"
+                       data-bs-toggle="modal" data-bs-target="#confirmationModal">Delete</a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="confirmationModalLabel">Delete Department</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="deleteDepartment(lastInteractedDepartmentId)"
+                  data-bs-dismiss="modal">Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="departmentModalLabel">{{ modalType }} Department</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form *ngIf="departmentForm" (ngSubmit)="departmentModalButton()" [formGroup]="departmentForm">
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name" aria-describedby="nameHelp" formControlName="name">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" value="Close">
+              @if (modalType !== "View") {
+                <input type="submit" class="btn btn-primary" data-bs-dismiss="modal" value="{{ modalType }}">
+              } @else {
+                <input type="submit" class="btn btn-warning" value="Edit">
+              }
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

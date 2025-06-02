@@ -18,10 +18,13 @@
           <a class="nav-link active" aria-current="page" routerLink="dashboard" routerLinkActive="active">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="list/delegations" routerLinkActive="active">All Delegations</a>
+          <a class="nav-link active" aria-current="page" routerLink="list/delegations" routerLinkActive="active">Delegations</a>
+        </li>
+        <li class="nav-item" *ngIf="user && user.role == 'ADMIN'">
+          <a class="nav-link active" aria-current="page" routerLink="list/departments" routerLinkActive="active">Departments</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="dashboard/manager" routerLinkActive="active" *ngIf="user !== undefined && user.role != 'EMPLOYEE'">Manager Dashboard</a>
+          <a class="nav-link active" aria-current="page" routerLink="dashboard/manager" routerLinkActive="active" *ngIf="user !== undefined && user.role != 'EMPLOYEE'">Reports</a>
         </li>
       </ul>
       <a *ngIf="isAuthenticated" class="nav-link active" aria-current="page" routerLink="logout" routerLinkActive="active">Logout</a>
