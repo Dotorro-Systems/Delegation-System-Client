@@ -1,4 +1,4 @@
-<div class="container w-75 mt-3">
+<div class="container w-100 mt-3">
   <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#departmentModal"
           (click)="modalType='Create'; resetDepartmentFormToDefaults();">
     Create Department
@@ -30,7 +30,7 @@
   </div>
 
   <div class="rounded-3 w-100 mt-3 mb-3 d-flex justify-content-center">
-    <table class="table table-striped" style="table-layout: fixed; width: 100%">
+    <table class="table table-striped">
       <thead>
       <tr>
         <th scope="col" class="{{ isColumnActiveInSorting('sort-' + getSortingConditionByColumnName(item)) }}" *ngFor="let item of getColumnNames()">{{ item }} <i type="button" class="bi bi-caret-{{ getSortingCaret('sort-' + getSortingConditionByColumnName(item)) }}-fill" (click)="setSortingCondition('sort-' + getSortingConditionByColumnName(item))"></i></th>

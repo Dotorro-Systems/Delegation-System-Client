@@ -112,7 +112,7 @@
             <td>{{ expense.user.firstName }} {{ expense.user.lastName }}</td>
             <td>{{ expense.createdAt | date:'mediumDate' }}</td>
             <td>{{ expense.description }}</td>
-            <td>${{ expense.amount }}</td>
+            <td>{{ expense.amount }} PLN</td>
             <td>
               <div class="dropdown" *ngIf="expense.user.id == user.id">
                 <button class="btn py-0" type="button" id="workLogDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -129,7 +129,7 @@
             <td>Total</td>
             <td></td>
             <td></td>
-            <td>${{ getTotalDelegationCost() }}</td>
+            <td>{{ getTotalDelegationCost() }} PLN</td>
             <td></td>
           </tr>
           </tbody>
@@ -178,7 +178,7 @@
           <h5 class="m-0">Manager Options</h5>
         </div>
         <div>
-          <button type="button" class="btn btn-primary"><a href="reports/{{ delegation.id }}?returnUrl={{ window.location.href }}">Generate Report</a></button>
+          <a href="reports/{{ delegation.id }}?returnUrl={{ window.location.href }}"><button type="button" class="btn btn-primary">Generate Report</button></a>
         </div>
       </div>
     </div>
@@ -223,7 +223,7 @@
       <div class="modal-body">
         <form [formGroup]="noteForm" (ngSubmit)="submitNote()">
           <div class="mb-3 form-group">
-            <label for="inputNote" class="form-label">Note Content:</label>
+            <label for="inputNote" class="form-label">Content:</label>
             <textarea class="form-control" id="inputNote" placeholder="Enter note" formControlName="content"></textarea>
           </div>
           <div class="modal-footer">

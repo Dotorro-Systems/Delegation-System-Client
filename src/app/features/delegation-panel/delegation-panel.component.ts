@@ -337,10 +337,12 @@ export class DelegationPanelComponent {
   }
 
   getTotalDelegationCost(): number {
-    return this.delegation.expenses
+    const totalAmount = this.delegation.expenses
       .reduce(function (a, b) {
         return a + b.amount;
       }, 0);
+
+    return Math.round(totalAmount * 100) / 100;
   }
 
   getColorByStatus(status: string) {
